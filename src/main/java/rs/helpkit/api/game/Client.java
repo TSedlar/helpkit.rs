@@ -15,4 +15,8 @@ public class Client {
     public static int world() {
         return Fields.asInt("Client#currentWorld");
     }
+
+    public static String selectedSpellName() {
+        return Fields.asString("Client#selectedSpellName");
+    }
 }

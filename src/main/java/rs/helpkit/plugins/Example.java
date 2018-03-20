@@ -23,6 +23,6 @@ public class Example extends Plugin implements Renderable {
     @Override
     public void render(Graphics2D g) {
         g.setColor(Color.GREEN);
-        g.drawString("FPS: " + Client.fps(), 100, 100);
+        g.drawString("data: " + Client.selectedSpellName(), 100, 100);
     }
 }

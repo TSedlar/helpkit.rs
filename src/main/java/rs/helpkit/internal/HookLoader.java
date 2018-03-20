@@ -20,6 +20,7 @@ public class HookLoader {
     public static final Map<String, Boolean> LONG_MAP = new ConcurrentHashMap<>();
 
     public static final Map<String, MethodHandle> FIELDS = new ConcurrentHashMap<>();
+    public static final Map<String, Field> DIRECT_FIELDS = new ConcurrentHashMap<>();
     public static final Map<String, Number> MULTIPLIERS = new ConcurrentHashMap<>();
 
     public static void load(ClassLoader loader) {
@@ -46,6 +47,7 @@ public class HookLoader {
                         System.out.println("HOOK NOT FOUND @ " + key);
                     } else {
                         LONG_MAP.put(key, field.getType().equals(long.class));
+                        DIRECT_FIELDS.put(key, field);
                         FIELDS.put(key, MethodHandles.lookup().unreflectGetter(field));
                     }
                 } catch (ClassNotFoundException | IllegalAccessException e) {

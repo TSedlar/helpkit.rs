@@ -1,13 +1,15 @@
 package rs.helpkit.internal;
 
+import rs.helpkit.api.raw.Fields;
+import rs.helpkit.api.util.Time;
 import rs.helpkit.util.fx.GraphicsState;
 
+import java.applet.Applet;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Tyler Sedlar
@@ -19,36 +21,19 @@ public class RSCanvas extends Canvas {
 
     public BufferedImage buffer, raw;
 
-    private final Canvas original;
     private boolean normalized = false;
     private boolean hidden = false;
+
+    private Canvas original;
+    private boolean running = false;
 
     public final List<Consumer<Graphics2D>> consumers = new ArrayList<>();
 
     public RSCanvas(Canvas original) {
         this.original = original;
+        setBounds(original.getBounds());
         raw = new BufferedImage(GAME_SIZE.width, GAME_SIZE.height, BufferedImage.TYPE_3BYTE_BGR);
         buffer = new BufferedImage(GAME_SIZE.width, GAME_SIZE.height, BufferedImage.TYPE_3BYTE_BGR);
-        for (MouseListener listener : original.getMouseListeners()) {
-            original.removeMouseListener(listener);
-            addMouseListener(listener);
-        }
-        for (MouseMotionListener listener : original.getMouseMotionListeners()) {
-            original.removeMouseMotionListener(listener);
-            addMouseMotionListener(listener);
-        }
-        for (MouseWheelListener listener : original.getMouseWheelListeners()) {
-            original.removeMouseWheelListener(listener);
-            addMouseWheelListener(listener);
-        }
-        for (KeyListener listener : original.getKeyListeners()) {
-            original.removeKeyListener(listener);
-            addKeyListener(listener);
-        }
-        for (FocusListener listener : original.getFocusListeners()) {
-            original.removeFocusListener(listener);
-            addFocusListener(listener);
-        }
     }
 
     public void normalize() {
@@ -66,7 +51,7 @@ public class RSCanvas extends Canvas {
 
     @Override
     public Graphics getGraphics() {
-        Graphics g = super.getGraphics();
+        Graphics g = original.getGraphics();
         if (hidden) {
             g.setColor(getBackground());
             g.fillRect(0, 0, getWidth(), getHeight());
@@ -98,5 +83,28 @@ public class RSCanvas extends Canvas {
     @Override
     public int hashCode() {
         return original.hashCode();
+    }
+
+    @SuppressWarnings("deprecation") // Applet is deprecated in Java9
+    public void startReplacementTask(Applet applet) {
+        if (!running) {
+            running = true;
+            new Thread(() -> {
+                while (running) {
+                    try {
+                        original = (Canvas) applet.getComponent(0);
+                        setBounds(original.getBounds());
+                        Object producer = Fields.get("Client#interfaceProducer");
+                        Fields.set("ComponentProducer#component", this, producer);
+                        Fields.set("GameEngine#canvas", this, applet);
+                        Time.sleep(1000);
+                    } catch (Exception e) {}
+                }
+            }).start();
+        }
+    }
+
+    public void stopReplacementTask() {
+        running = false;
     }
 }

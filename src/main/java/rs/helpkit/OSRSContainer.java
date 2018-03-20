@@ -2,22 +2,19 @@ package rs.helpkit;
 
 import rs.helpkit.api.Manifest;
 import rs.helpkit.api.Plugin;
-import rs.helpkit.api.game.Client;
 import rs.helpkit.api.util.Renderable;
-import rs.helpkit.internal.HookLoader;
+import rs.helpkit.api.util.Time;
 import rs.helpkit.internal.RSCanvas;
+import rs.helpkit.internal.HookLoader;
 import rs.helpkit.plugins.Example;
 import rs.helpkit.pref.RSPreferences;
-import rs.helpkit.reflect.Classes;
 
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.List;
 
 /**
@@ -32,7 +29,7 @@ public class OSRSContainer {
     private Window window;
     private Panel panel;
 
-    private final List<Plugin> plugins = new ArrayList<>();
+    public final List<Plugin> plugins = new ArrayList<>();
 
     @SuppressWarnings("deprecation") // Applet is deprecated in Java9
     public OSRSContainer(Applet applet) {
@@ -41,18 +38,15 @@ public class OSRSContainer {
         hideAllButCanvas(applet);
         HookLoader.load(loader);
         plugins.add(new Example());
-        customCanvas.consumers.add(g -> plugins.stream()
-                .filter(plugin -> plugin instanceof Renderable).forEach(plugin -> {
-                    if (plugin.enabled && plugin.validate()) {
-                        ((Renderable) plugin).render(g);
-                    }
-                }));
         plugins.forEach(plugin -> {
             Manifest manifest = plugin.getClass().getAnnotation(Manifest.class);
             if (manifest.loop()) {
                 new Thread(plugin).start();
             }
         });
+        customCanvas.consumers.add(g -> plugins.stream()
+                .filter(p -> p.enabled && p.validate() && p instanceof Renderable)
+                .forEach(p -> ((Renderable) p).render(g)));
     }
 
     private Window findWindow(Canvas canvas) {
@@ -66,37 +60,9 @@ public class OSRSContainer {
     }
 
     @SuppressWarnings("deprecation") // Applet is deprecated in Java9
-    private void replaceCanvas(Applet applet, Canvas canvas) {
-        customCanvas = new RSCanvas(canvas);
-        applet.remove(0);
-        applet.add(customCanvas);
-        Class<?> engine = applet.getClass().getSuperclass();
-        Field canvasField = Classes.findField(engine, field -> field.getType().equals(Canvas.class));
-        try {
-            Objects.requireNonNull(canvasField).set(applet, customCanvas);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Unable to set custom canvas");
-        }
-        customCanvas.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent e) {
-                Dimension size = customCanvas.getSize();
-                RSPreferences.setDefaultSize(size.width, size.height);
-                customCanvas.raw = new BufferedImage(size.width, size.height, BufferedImage.TYPE_3BYTE_BGR);
-                customCanvas.buffer = new BufferedImage(size.width, size.height, BufferedImage.TYPE_3BYTE_BGR);
-            }
-        });
-        window.addComponentListener(new ComponentAdapter() {
-            public void componentMoved(ComponentEvent e) {
-                RSPreferences.setDefaultLocation(window.getX(), window.getY());
-            }
-        });
-    }
-
-    @SuppressWarnings("deprecation") // Applet is deprecated in Java9
     private void hideAllButCanvas(Applet applet) {
         canvas = (Canvas) applet.getComponent(0);
         window = findWindow(canvas);
-        replaceCanvas(applet, canvas);
         Component[] components = window.getComponents();
         for (Component child : components) {
             if (child instanceof Container) {
@@ -111,8 +77,30 @@ public class OSRSContainer {
                 break;
             }
         }
+        for (int i = 0; i < 10 && canvas.getMouseListeners().length == 0; i++) {
+            Time.sleep(1000);
+        }
+        customCanvas = new RSCanvas(canvas);
+        panel.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                Dimension size = panel.getSize();
+                RSPreferences.setDefaultSize(size.width, size.height);
+                canvas.setPreferredSize(size);
+                customCanvas.setPreferredSize(size);
+                customCanvas.raw = new BufferedImage(size.width, size.height, BufferedImage.TYPE_3BYTE_BGR);
+                customCanvas.buffer = new BufferedImage(size.width, size.height, BufferedImage.TYPE_3BYTE_BGR);
+            }
+        });
+        window.addComponentListener(new ComponentAdapter() {
+            public void componentMoved(ComponentEvent e) {
+                RSPreferences.setDefaultLocation(window.getX(), window.getY());
+            }
+        });
+        customCanvas.startReplacementTask(applet);
         window.revalidate();
         Dimension size = RSPreferences.getDefaultSize();
+        canvas.setPreferredSize(size);
+        customCanvas.setPreferredSize(size);
         customCanvas.raw = new BufferedImage(size.width, size.height, BufferedImage.TYPE_3BYTE_BGR);
         customCanvas.buffer = new BufferedImage(size.width, size.height, BufferedImage.TYPE_3BYTE_BGR);
         panel.setSize(size);

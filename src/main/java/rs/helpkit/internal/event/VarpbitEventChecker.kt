@@ -18,11 +18,9 @@ class VarpbitEventChecker(eventBus: EventBus) : EventChecker(eventBus) {
                 return
             }
             val diff = Math.min(last.size, current.size)
-            for (idx in 0 until diff) {
-                if (last[idx] != current[idx]) {
-                    eventBus.post(VarpbitChanged(idx))
-                }
-            }
+            (0 until diff)
+                    .filter { last[it] != current[it] }
+                    .forEach { eventBus.post(VarpbitChanged(it)) }
         } catch (e: Exception) {
             e.printStackTrace()
         }

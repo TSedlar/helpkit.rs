@@ -3,8 +3,10 @@ package rs.helpkit.plugins
 import com.google.common.eventbus.Subscribe
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
+import rs.helpkit.api.game.GrandExchangeOffers
 import rs.helpkit.api.game.Players
 import rs.helpkit.api.game.access.Varpbits
+import rs.helpkit.api.game.listener.event.GrandExchangeOfferUpdated
 import rs.helpkit.api.game.listener.event.VarpbitChanged
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
@@ -18,6 +20,12 @@ class Example : Plugin(), Renderable {
 
     override fun validate(): Boolean {
         return true
+    }
+
+    @Subscribe
+    fun onGrandExchangeOfferUpdated(event: GrandExchangeOfferUpdated) {
+        val offer = GrandExchangeOffers[event.slot]
+        println("[GE] #${event.slot} => $offer")
     }
 
     @Subscribe

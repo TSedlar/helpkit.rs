@@ -12,6 +12,7 @@ object RSHelpKit {
     @Throws(Throwable::class)
     @JvmStatic
     fun main(args: Array<String>) {
+//        val injector = Guice.createInjector(HelpKitModule())
         val viewerJar = HKConfig.path(HKConfig.JAGEX, "jagexappletviewer.jar")
         try {
             JagexAppletViewer.download(viewerJar)

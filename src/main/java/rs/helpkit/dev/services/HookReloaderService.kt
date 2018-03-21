@@ -13,7 +13,7 @@ import java.nio.file.StandardWatchEventKinds.OVERFLOW
 class HookReloaderService(
         private val hookDirectory: String,
         private val callback: () -> Unit
-): Thread() {
+) : Thread() {
     override fun run() {
         val watcher = FileSystems.getDefault().newWatchService()
 

@@ -1,13 +1,13 @@
 package rs.helpkit.api.game.wrapper
 
-import rs.helpkit.api.game.GrandExchangeOffer
+import rs.helpkit.api.game.GEOffer
 import rs.helpkit.api.raw.Wrapper
 
 
 /**
  * @since 03/21/2018
  */
-class OfferBox(referant: Any?) : Wrapper("GrandExchangeOffer", referant), GrandExchangeOffer {
+class OfferBox(referant: Any?) : Wrapper("GrandExchangeOffer", referant), GEOffer {
     override val itemsExchanged: Int
         get() = asInt("itemsExchanged")
 

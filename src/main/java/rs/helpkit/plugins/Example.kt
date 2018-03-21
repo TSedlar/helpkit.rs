@@ -3,11 +3,11 @@ package rs.helpkit.plugins
 import com.google.common.eventbus.Subscribe
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
-import rs.helpkit.api.game.GrandExchangeOffers
+import rs.helpkit.api.game.GrandExchange
 import rs.helpkit.api.game.Players
 import rs.helpkit.api.game.access.Varpbits
-import rs.helpkit.api.game.listener.event.GrandExchangeOfferUpdated
-import rs.helpkit.api.game.listener.event.VarpbitChanged
+import rs.helpkit.api.game.listener.event.GEOfferUpdated
+import rs.helpkit.api.game.listener.event.VarpChanged
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
 import java.awt.Color
@@ -23,13 +23,13 @@ class Example : Plugin(), Renderable {
     }
 
     @Subscribe
-    fun onGrandExchangeOfferUpdated(event: GrandExchangeOfferUpdated) {
-        val offer = GrandExchangeOffers[event.slot]
+    fun onGrandExchangeOfferUpdated(event: GEOfferUpdated) {
+        val offer = GrandExchange[event.slot]
         println("[GE] #${event.slot} => $offer")
     }
 
     @Subscribe
-    fun onVarbitChanged(event: VarpbitChanged) {
+    fun onVarbitChanged(event: VarpChanged) {
         println("Varbit@${event.index} = ${Varpbits.get()[event.index]}")
     }
 

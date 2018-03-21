@@ -6,12 +6,12 @@ import rs.helpkit.api.raw.Fields
 /**
  * @since 03/21/2018
  */
-object GrandExchangeOffers {
-    operator fun get(slot: Int): GrandExchangeOffer? {
-        return all()[slot]
+object GrandExchange {
+    operator fun get(slot: Int): GEOffer? {
+        return offers()[slot]
     }
 
-    fun all(): List<GrandExchangeOffer> {
+    fun offers(): List<GEOffer> {
         val offers = Fields["Client#grandExchangeOffers"]
         if (offers is Array<*>) {
             return offers.map { OfferBox(it) }
@@ -19,7 +19,7 @@ object GrandExchangeOffers {
         return emptyList()
     }
 
-    fun active(): List<GrandExchangeOffer> {
-        return all().filter { it.itemId > 0 }
+    fun activeOffers(): List<GEOffer> {
+        return offers().filter { it.itemId > 0 }
     }
 }

@@ -1,11 +1,14 @@
 package rs.helpkit
 
+import com.google.common.eventbus.EventBus
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Time
 import rs.helpkit.internal.HookLoader
 import rs.helpkit.internal.RSCanvas
+import rs.helpkit.internal.event.EventChecker
+import rs.helpkit.internal.event.VarpEventChecker
 import rs.helpkit.plugins.Example
 import rs.helpkit.pref.RSPreferences
 import java.applet.Applet
@@ -13,7 +16,6 @@ import java.awt.*
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 import java.awt.image.BufferedImage
-import java.util.*
 
 /**
  * @author Tyler Sedlar
@@ -27,7 +29,13 @@ class OSRSContainer(applet: Applet) {
     private var window: Window
     private var panel: Panel? = null
 
-    val plugins: MutableList<Plugin> = ArrayList()
+    val plugins: MutableList<Plugin> = arrayListOf()
+    private val checkers: MutableList<EventChecker> = arrayListOf()
+
+    private fun loadHooks() {
+        println("Loading hooks")
+        HookLoader.load(loader)
+    }
 
     init {
         println("Game has loaded")
@@ -36,7 +44,12 @@ class OSRSContainer(applet: Applet) {
         window = findWindow(canvas)
         customCanvas = RSCanvas(canvas)
         hideAllButCanvas(applet)
-        HookLoader.load(loader)
+        loadHooks()
+
+        val bus = EventBus()
+        checkers.add(VarpEventChecker(bus))
+        checkers.forEach { it.start() }
+
         plugins.add(Example())
         plugins.forEach { plugin ->
             val manifest = plugin.javaClass.getAnnotation(Manifest::class.java)
@@ -44,6 +57,7 @@ class OSRSContainer(applet: Applet) {
                 Thread(plugin).start()
             }
         }
+        plugins.forEach { bus.register(it) }
         customCanvas.consumers.add({ g ->
             plugins.stream()
                     .filter { p -> p.enabled && p.validate() && p is Renderable }

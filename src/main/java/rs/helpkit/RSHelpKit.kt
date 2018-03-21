@@ -1,7 +1,6 @@
 package rs.helpkit
 
 import rs.helpkit.pref.HKConfig
-
 import java.io.File
 
 /**

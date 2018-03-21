@@ -5,11 +5,13 @@ import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Time
+import rs.helpkit.dev.services.HookReloaderService
 import rs.helpkit.internal.HookLoader
 import rs.helpkit.internal.RSCanvas
 import rs.helpkit.internal.event.EventChecker
 import rs.helpkit.internal.event.VarpEventChecker
 import rs.helpkit.plugins.Example
+import rs.helpkit.pref.HKConfig
 import rs.helpkit.pref.RSPreferences
 import java.applet.Applet
 import java.awt.*
@@ -28,6 +30,9 @@ class OSRSContainer(applet: Applet) {
     private var customCanvas: RSCanvas
     private var window: Window
     private var panel: Panel? = null
+    private val hookReloader = HookReloaderService(HKConfig.path("data")){
+        loadHooks()
+    }
 
     val plugins: MutableList<Plugin> = arrayListOf()
     private val checkers: MutableList<EventChecker> = arrayListOf()
@@ -45,6 +50,7 @@ class OSRSContainer(applet: Applet) {
         customCanvas = RSCanvas(canvas)
         hideAllButCanvas(applet)
         loadHooks()
+        hookReloader.run()
 
         val bus = EventBus()
         checkers.add(VarpEventChecker(bus))

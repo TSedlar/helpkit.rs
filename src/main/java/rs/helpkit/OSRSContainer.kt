@@ -50,7 +50,7 @@ class OSRSContainer(applet: Applet) {
         customCanvas = RSCanvas(canvas)
         hideAllButCanvas(applet)
         loadHooks()
-        hookReloader.run()
+        hookReloader.start()
 
         val bus = EventBus()
         checkers.add(VarpEventChecker(bus))

@@ -20,8 +20,8 @@ object Internet {
      */
     fun download(url: String, targetFile: String): Boolean {
         try {
-            URL(url).openStream().use { `in` ->
-                Files.copy(`in`, Paths.get(targetFile), StandardCopyOption.REPLACE_EXISTING)
+            URL(url).openStream().use { input ->
+                Files.copy(input, Paths.get(targetFile), StandardCopyOption.REPLACE_EXISTING)
                 return true
             }
         } catch (e: Exception) {

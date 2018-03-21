@@ -17,12 +17,12 @@ abstract class Plugin : Runnable {
     override fun run() {
         var delay = 0
         do {
-            if (!validate()) {
-                delay = 1000
+            delay = if (!validate()) {
+                1000
             } else {
                 Time.sleep(delay.toLong())
                 try {
-                    delay = loop()
+                    loop()
                 } catch (e: Exception) {
                     e.printStackTrace()
                     break

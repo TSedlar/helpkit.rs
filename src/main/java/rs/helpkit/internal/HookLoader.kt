@@ -32,7 +32,7 @@ object HookLoader {
         fields.lines.removeAt(0) // remove header
         fields.lines.parallelStream().forEach { line ->
             val key = line[0]
-            if (line[1] == null || line[1] == "null") {
+            if (line[1] == "null") {
                 println("BROKEN HOOK @ " + key)
             } else {
                 INVERSE_FIELD_MAP[line[1]] = line[0]

@@ -53,16 +53,16 @@ class OSRSContainer(applet: Applet) {
 
     private fun findWindow(canvas: Canvas?): Window {
         var component: Component? = canvas
-        while (component != null) {
+        do {
+            component = component?.parent ?: break
             if (component is Window) {
                 return component
             }
-            component = component.parent
-        }
-
+        } while (component != null)
         error("Unable to find window")
     }
 
+    @Suppress("DEPRECATION") // Applet is deprecated in Java9
     private fun hideAllButCanvas(applet: Applet) {
         canvas = applet.getComponent(0) as Canvas
         window = findWindow(canvas)

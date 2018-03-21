@@ -16,6 +16,6 @@ object Players {
      */
     @JvmStatic
     fun local(): Player? {
-        return Player(Fields.get("Client#localPlayer"))
+        return Player(Fields["Client#localPlayer"])
     }
 }

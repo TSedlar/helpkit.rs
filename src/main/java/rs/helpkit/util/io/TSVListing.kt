@@ -18,7 +18,9 @@ class TSVListing {
         fun load(file: String): TSVListing {
             val mapping = TSVListing()
             try {
-                Files.lines(Paths.get(file)).forEach { line -> mapping.lines.add(line.split("\t".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) }
+                Files.lines(Paths.get(file)).forEach { line ->
+                    mapping.lines.add(line.split("\t".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+                }
             } catch (e: IOException) {
                 throw IllegalStateException("Unable to parse tsv: " + file)
             }

@@ -82,7 +82,7 @@ class RSCanvas(private var original: Canvas?) : Canvas() {
         return original == other
     }
 
-    // Applet is deprecated in Java9
+    @Suppress("DEPRECATION") // Applet is deprecated in Java9
     fun startReplacementTask(applet: Applet) {
         if (!running) {
             running = true

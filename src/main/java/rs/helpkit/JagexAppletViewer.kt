@@ -1,5 +1,6 @@
 package rs.helpkit
 
+import rs.helpkit.api.util.Time
 import rs.helpkit.pref.RSPreferences
 import rs.helpkit.reflect.Classes
 import rs.helpkit.util.io.Internet
@@ -22,35 +23,32 @@ object JagexAppletViewer {
     private const val VIEWER_URL = "http://oldschool.runescape.com/downloads/jagexappletviewer.jar"
     private const val CONFIG = "http://oldschool%s.runescape.com/l=en/jav_config.ws"
 
+    @Suppress("DEPRECATION") // Applet is deprecated in Java9
     @Throws(ClassNotFoundException::class)
-    private// Applet is deprecated in Java9
-    fun findAppletField(loader: ClassLoader): Field {
-        val viewer = loader.loadClass("app.appletviewer") ?: throw IllegalStateException("app.appletviewer not found")
+    private fun findAppletField(loader: ClassLoader): Field {
+        val viewer = loader.loadClass("app.appletviewer") ?:
+                throw IllegalStateException("app.appletviewer not found")
         return Classes.findField(viewer) { field -> field.type == Applet::class.java }
                 ?: throw IllegalStateException("Applet not found")
     }
 
+    @Suppress("DEPRECATION") // Applet is deprecated in Java9
     private fun locateApplet(field: Field): Applet {
         for (i in 1..10) {
             val applet = field.get(null)
             if (applet != null) {
                 return applet as Applet
             }
+            Time.sleep(1000)
         }
 
         error("Unable to locate RS applet")
     }
 
+    @Suppress("DEPRECATION") // Applet is deprecated in Java9
     @Throws(ClassNotFoundException::class, IllegalAccessException::class, InterruptedException::class)
     private fun findRSApplet(loader: ClassLoader): Applet {
-        val appletField = findAppletField(loader)
-
-        return locateApplet(appletField)
-//        try {
-//        } catch (e: IllegalStateException) {
-//            System.err.println(e.message)
-//            System.exit(1)
-//        }
+        return locateApplet(findAppletField(loader))
     }
 
     @Throws(IOException::class)
@@ -78,7 +76,6 @@ object JagexAppletViewer {
     }
 
     @Throws(Throwable::class)
-    // Applet is deprecated in Java9
     fun run(targetFile: String): OSRSContainer {
         val jar = File(targetFile)
         val loader = URLClassLoader.newInstance(arrayOf(jar.toURI().toURL()))
@@ -91,7 +88,7 @@ object JagexAppletViewer {
 
         val mainHandle = MethodHandles.lookup().unreflect(exec)
         val viewerArgs = arrayOf("./")
-        mainHandle.invoke(*viewerArgs as Array<Any>)
+        mainHandle.invoke(*viewerArgs as Array<*>)
 
         val applet = findRSApplet(loader)
 

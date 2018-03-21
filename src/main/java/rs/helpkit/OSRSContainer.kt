@@ -60,7 +60,7 @@ class OSRSContainer(applet: Applet) {
         plugins.forEach { plugin ->
             val manifest = plugin.javaClass.getAnnotation(Manifest::class.java)
             if (manifest.loop) {
-                Thread(plugin).start()
+                plugin.start()
             }
         }
         plugins.forEach { bus.register(it) }

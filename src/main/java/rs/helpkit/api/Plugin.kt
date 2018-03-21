@@ -1,34 +1,40 @@
 package rs.helpkit.api
 
+import rs.helpkit.api.util.Schedule
 import rs.helpkit.api.util.Time
 
 /**
  * @author Tyler Sedlar
  * @since 3/20/2018
  */
-abstract class Plugin : Runnable {
+abstract class Plugin : Thread() {
 
     var enabled = true
 
     abstract fun validate(): Boolean
 
-    abstract fun loop(): Int
-
     override fun run() {
-        var delay = 0
-        do {
-            delay = if (!validate()) {
-                1000
-            } else {
-                Time.sleep(delay.toLong())
-                try {
-                    loop()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    break
-                }
-
+        val self: Plugin = this
+        this.javaClass.methods.forEach { method ->
+            val schedule = method.getAnnotation(Schedule::class.java)
+            if (schedule != null) {
+                Thread({
+                    var errored = false
+                    while (!errored) {
+                        try {
+                            if (enabled && validate()) {
+                                method.invoke(self)
+                                Time.sleep(schedule.interval.toLong())
+                            } else {
+                                Time.sleep(1000)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            errored = true
+                        }
+                    }
+                }).start()
             }
-        } while (delay >= 0)
+        }
     }
 }

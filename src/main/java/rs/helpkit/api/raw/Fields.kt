@@ -62,14 +62,6 @@ object Fields {
         }
     }
 
-    fun asIntArray(key: String, parent: Any? = null): IntArray {
-        return try {
-            get(key, parent) as IntArray
-        } catch (e: Exception) {
-            IntArray(0)
-        }
-    }
-
     @JvmOverloads
     fun asInt(key: String, parent: Any? = null): Int {
         return try {

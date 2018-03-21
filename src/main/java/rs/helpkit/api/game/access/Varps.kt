@@ -7,6 +7,6 @@ import rs.helpkit.api.raw.Fields
  */
 object Varps {
     fun get(): IntArray {
-        return Fields.asIntArray("Client#varps")
+        return Fields.asIntArray("Client#varps") ?: IntArray(0)
     }
 }

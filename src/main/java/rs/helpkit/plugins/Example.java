@@ -2,7 +2,7 @@ package rs.helpkit.plugins;
 
 import rs.helpkit.api.Manifest;
 import rs.helpkit.api.Plugin;
-import rs.helpkit.api.game.Client;
+import rs.helpkit.api.game.Players;
 import rs.helpkit.api.util.Renderable;
 
 import java.awt.*;
@@ -23,6 +23,6 @@ public class Example extends Plugin implements Renderable {
     @Override
     public void render(Graphics2D g) {
         g.setColor(Color.GREEN);
-        g.drawString("data: " + Client.selectedSpellName(), 100, 100);
+        g.drawString("data: " + Players.local().level(), 100, 100);
     }
 }

@@ -13,7 +13,12 @@ class Player(referent: Any?) : Wrapper("Player", referent) {
      *
      * @return The combat level of this player
      */
-    fun level(): Int {
-        return asInt("combatLevel")
-    }
+    fun level(): Int = asInt("combatLevel")
+
+    /**
+     * Gets the nameable object of this player
+     *
+     * @return The nameable object of this player
+     */
+    fun name(): Nameable? = Nameable(get("name"))
 }

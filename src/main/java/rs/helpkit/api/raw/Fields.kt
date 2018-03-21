@@ -41,17 +41,15 @@ object Fields {
         if (handle == null) {
             return null
         } else {
-            var value: Any?
-            value = try {
+            var value: Any? = try {
                 if (parent != null) {
-                    handle.invoke(parent)
+                    handle.invokeWithArguments(parent)
                 } else {
-                    handle.invoke()
+                    handle.invokeWithArguments()
                 }
             } catch (t: Throwable) {
                 null
             }
-
             if (HookLoader.MULTIPLIERS.containsKey(key) && value != null) {
                 val isLong = HookLoader.LONG_MAP[key] ?: false
                 value = if (isLong) {

@@ -21,6 +21,6 @@ class Example : Plugin(), Renderable {
 
     override fun render(g: Graphics2D) {
         g.color = Color.GREEN
-        g.drawString("data: " + Players.local()?.level(), 100, 100)
+        g.drawString("data: " + Players.local()?.name()?.text(), 100, 100)
     }
 }

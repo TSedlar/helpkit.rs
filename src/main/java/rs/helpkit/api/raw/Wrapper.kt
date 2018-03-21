@@ -8,19 +8,13 @@ import java.lang.ref.WeakReference
  */
 open class Wrapper(private val container: String, referent: Any?) : WeakReference<Any>(referent) {
 
-    private fun key(name: String): String {
-        return container + "#" + name
-    }
+    private fun key(name: String): String = container + "#" + name
 
-    protected operator fun get(name: String): Any? {
-        return Fields[key(name), get()]
-    }
+    protected operator fun get(name: String): Any? = Fields[key(name), get()]
 
-    protected fun asInt(name: String): Int {
-        return Fields.asInt(key(name), get())
-    }
+    protected fun asInt(name: String): Int = Fields.asInt(key(name), get())
 
-    protected fun asString(name: String): String? {
-        return Fields.asString(key(name), get())
-    }
+    protected fun asString(name: String): String? = Fields.asString(key(name), get())
+
+    protected fun asIntArray(name: String): IntArray? = Fields.asIntArray(key(name), get())
 }

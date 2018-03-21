@@ -8,15 +8,11 @@ import rs.helpkit.api.raw.Fields
  */
 object Client {
 
-    fun fps(): Int {
-        return Fields.asInt("Client#fps")
-    }
+    fun fps(): Int = Fields.asInt("Client#fps")
 
-    fun world(): Int {
-        return Fields.asInt("Client#currentWorld")
-    }
+    fun world(): Int = Fields.asInt("Client#currentWorld")
 
-    fun selectedSpellName(): String? {
-        return Fields.asString("Client#selectedSpellName")
-    }
+    fun selectedSpellName(): String? = Fields.asString("Client#selectedSpellName")
+
+    fun varps(): IntArray? = Fields.asIntArray("Client#varps")
 }

@@ -75,4 +75,15 @@ object Fields {
     fun asString(key: String, parent: Any? = null): String? {
         return get(key, parent)?.toString()
     }
+
+    @Suppress("UNCHECKED_CAST")
+    @JvmOverloads
+    fun asIntArray(key: String, parent: Any? = null): IntArray? {
+        return try {
+            get(key, parent) as IntArray
+        } catch (e: Exception) {
+            e.printStackTrace()
+            IntArray(0)
+        }
+    }
 }

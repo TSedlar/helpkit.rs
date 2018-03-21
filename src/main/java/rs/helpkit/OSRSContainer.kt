@@ -9,7 +9,7 @@ import rs.helpkit.dev.services.HookReloaderService
 import rs.helpkit.internal.HookLoader
 import rs.helpkit.internal.RSCanvas
 import rs.helpkit.internal.event.EventChecker
-import rs.helpkit.internal.event.VarpEventChecker
+import rs.helpkit.internal.event.VarpbitEventChecker
 import rs.helpkit.plugins.Example
 import rs.helpkit.pref.HKConfig
 import rs.helpkit.pref.RSPreferences
@@ -53,7 +53,7 @@ class OSRSContainer(applet: Applet) {
         hookReloader.start()
 
         val bus = EventBus()
-        checkers.add(VarpEventChecker(bus))
+        checkers.add(VarpbitEventChecker(bus))
         checkers.forEach { it.start() }
 
         plugins.add(Example())

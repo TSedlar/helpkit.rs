@@ -2,12 +2,12 @@ package rs.helpkit.internal.event
 
 import com.google.common.eventbus.EventBus
 import rs.helpkit.api.game.Client
-import rs.helpkit.api.game.listener.event.VarbitChanged
+import rs.helpkit.api.game.listener.event.VarpbitChanged
 
 /**
  * @since 03/20/2018
  */
-class VarpEventChecker(eventBus: EventBus) : EventChecker(eventBus) {
+class VarpbitEventChecker(eventBus: EventBus) : EventChecker(eventBus) {
     private var cachedVarps: IntArray? = null
 
     override fun check() {
@@ -20,7 +20,7 @@ class VarpEventChecker(eventBus: EventBus) : EventChecker(eventBus) {
             val diff = Math.min(last.size, current.size)
             for (idx in 0 until diff) {
                 if (last[idx] != current[idx]) {
-                    eventBus.post(VarbitChanged(idx))
+                    eventBus.post(VarpbitChanged(idx))
                 }
             }
         } catch (e: Exception) {

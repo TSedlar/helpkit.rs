@@ -4,8 +4,8 @@ import com.google.common.eventbus.Subscribe
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
 import rs.helpkit.api.game.Players
-import rs.helpkit.api.game.access.Varps
-import rs.helpkit.api.game.listener.event.VarbitChanged
+import rs.helpkit.api.game.access.Varpbits
+import rs.helpkit.api.game.listener.event.VarpbitChanged
 import rs.helpkit.api.util.Renderable
 import java.awt.Color
 import java.awt.Graphics2D
@@ -20,8 +20,8 @@ class Example : Plugin(), Renderable {
     }
 
     @Subscribe
-    fun onVarbitChanged(event: VarbitChanged) {
-        println("Varbit@${event.index} = ${Varps.get()[event.index]}")
+    fun onVarbitChanged(event: VarpbitChanged) {
+        println("Varbit@${event.index} = ${Varpbits.get()[event.index]}")
     }
 
     override fun loop(): Int {

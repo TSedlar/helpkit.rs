@@ -12,6 +12,7 @@ import rs.helpkit.internal.event.EventChecker
 import rs.helpkit.internal.event.GEOfferEventChecker
 import rs.helpkit.internal.event.VarpbitEventChecker
 import rs.helpkit.plugins.Example
+import rs.helpkit.plugins.PluginTab
 import rs.helpkit.pref.HKConfig
 import rs.helpkit.pref.RSPreferences
 import rs.helpkit.util.io.Resources
@@ -60,6 +61,7 @@ class OSRSContainer(applet: Applet) {
         checkers.forEach { it.start() }
 
         plugins.add(Example())
+        plugins.add(PluginTab())
         plugins.forEach { plugin ->
             val manifest = plugin.javaClass.getAnnotation(Manifest::class.java)
             if (manifest.loop) {
@@ -113,8 +115,8 @@ class OSRSContainer(applet: Applet) {
             override fun componentResized(e: ComponentEvent?) {
                 val size = panel!!.size
                 RSPreferences.setDefaultSize(size.width, size.height)
-                canvas.preferredSize = size
-                customCanvas.preferredSize = size
+                canvas.bounds = Rectangle(0, 0, size.width, size.height)
+                customCanvas.bounds = Rectangle(0, 0, size.width, size.height)
                 customCanvas.raw = BufferedImage(size.width, size.height, BufferedImage.TYPE_3BYTE_BGR)
                 customCanvas.buffer = BufferedImage(size.width, size.height, BufferedImage.TYPE_3BYTE_BGR)
             }

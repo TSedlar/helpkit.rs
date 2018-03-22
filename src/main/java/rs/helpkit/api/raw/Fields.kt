@@ -24,7 +24,6 @@ object Fields {
             } catch (e: IllegalAccessException) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -72,8 +71,36 @@ object Fields {
     }
 
     @JvmOverloads
+    fun asLong(key: String, parent: Any? = null): Long {
+        return try {
+            get(key, parent) as Long
+        } catch (e: Exception) {
+            -1
+        }
+    }
+
+    @JvmOverloads
+    fun asBoolean(key: String, parent: Any? = null): Boolean {
+        return try {
+            get(key, parent) as Boolean
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    @JvmOverloads
     fun asString(key: String, parent: Any? = null): String? {
         return get(key, parent)?.toString()
+    }
+
+    @JvmOverloads
+    fun asArray(key: String, parent: Any? = null): Array<*>? {
+        return try {
+            get(key, parent) as Array<*>
+        } catch (e: Exception) {
+//            e.printStackTrace()
+            emptyArray<Any>()
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -82,8 +109,13 @@ object Fields {
         return try {
             get(key, parent) as IntArray
         } catch (e: Exception) {
-            e.printStackTrace()
+//            e.printStackTrace()
             IntArray(0)
         }
+    }
+
+    @JvmOverloads
+    fun asStringArray(name: String, parent: Any? = null): Array<String>? {
+        return asArray(name, parent)?.map { item -> item.toString() }?.toTypedArray()
     }
 }

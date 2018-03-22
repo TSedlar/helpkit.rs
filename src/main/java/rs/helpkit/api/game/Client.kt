@@ -15,4 +15,6 @@ object Client {
     fun selectedSpellName(): String? = Fields.asString("Client#selectedSpellName")
 
     fun varps(): IntArray? = Fields.asIntArray("Client#varps")
+
+    fun cycle(): Int = Fields.asInt("Client#globalCycle")
 }

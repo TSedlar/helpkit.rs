@@ -1,8 +1,11 @@
 package rs.helpkit
 
 import com.google.common.eventbus.EventBus
-import rs.helpkit.api.Manifest
+import org.reflections.Reflections
+import org.reflections.scanners.SubTypesScanner
+import org.slf4j.LoggerFactory
 import rs.helpkit.api.Plugin
+import rs.helpkit.api.manifest
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Time
 import rs.helpkit.dev.services.HookReloaderService
@@ -11,8 +14,6 @@ import rs.helpkit.internal.RSCanvas
 import rs.helpkit.internal.event.EventChecker
 import rs.helpkit.internal.event.GEOfferEventChecker
 import rs.helpkit.internal.event.VarpbitEventChecker
-import rs.helpkit.plugins.Example
-import rs.helpkit.plugins.PluginTab
 import rs.helpkit.pref.HKConfig
 import rs.helpkit.pref.RSPreferences
 import rs.helpkit.util.io.Resources
@@ -28,6 +29,8 @@ import java.awt.image.BufferedImage
  */
 class OSRSContainer(applet: Applet) {
 
+    private val logger = LoggerFactory.getLogger(OSRSContainer::class.java)
+
     private val loader: ClassLoader
     private var canvas: Canvas
     private var customCanvas: RSCanvas
@@ -37,12 +40,31 @@ class OSRSContainer(applet: Applet) {
         loadHooks()
     }
 
-    val plugins: MutableList<Plugin> = arrayListOf()
+    val plugins = loadPlugins()
     private val checkers: MutableList<EventChecker> = arrayListOf()
 
     private fun loadHooks() {
         println("Loading hooks")
         HookLoader.load(loader)
+    }
+
+    private fun loadPlugins(): List<Plugin> {
+        val reflections = Reflections("rs.helpkit", SubTypesScanner())
+        val pluginClasses = reflections.getSubTypesOf(Plugin::class.java)
+        return pluginClasses.mapNotNull { clazz ->
+            try {
+                val plugin = clazz.newInstance()
+                if (plugin.manifest() == null) {
+                    logger.info("${clazz.name} is of type Plugin, but does not have a Manifest")
+                    return@mapNotNull null
+                }
+                return@mapNotNull plugin
+            } catch (e: IllegalAccessException) {
+            } catch (e: InstantiationException) {
+            }
+
+            null
+        }
     }
 
     init {
@@ -60,16 +82,23 @@ class OSRSContainer(applet: Applet) {
         checkers.add(GEOfferEventChecker(bus))
         checkers.forEach { it.start() }
 
-        plugins.add(Example())
-        plugins.add(PluginTab())
+        logger.info("Starting looping plugins")
         plugins.forEach { plugin ->
-            val manifest = plugin.javaClass.getAnnotation(Manifest::class.java)
-            if (manifest.loop) {
-                plugin.start()
+            plugin.manifest()?.run {
+                if (loop) {
+                    logger.info("Starting $name v$version")
+                    plugin.start()
+                    logger.debug("Started $name v$version")
+                }
             }
         }
+        logger.info("Started looping plugins")
+
         plugins.forEach { bus.register(it) }
+
+        logger.info("Installing fonts")
         Resources.installFonts()
+
         customCanvas.consumers.add({ g ->
             plugins.stream()
                     .filter { p -> p.enabled && p.validate() && p is Renderable }

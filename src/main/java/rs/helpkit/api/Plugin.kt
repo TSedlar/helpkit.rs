@@ -3,6 +3,12 @@ package rs.helpkit.api
 import rs.helpkit.api.util.Schedule
 import rs.helpkit.api.util.Time
 
+fun hasManifest(clazz: Class<*>): Boolean = clazz.getAnnotation(Manifest::class.java) != null
+
+fun Plugin.manifest(): Manifest? {
+    return this.javaClass.getAnnotation(Manifest::class.java)
+}
+
 /**
  * @author Tyler Sedlar
  * @since 3/20/2018

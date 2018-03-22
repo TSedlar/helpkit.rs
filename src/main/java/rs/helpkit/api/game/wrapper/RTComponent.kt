@@ -73,6 +73,8 @@ class RTComponent(referent: Any?, var index: Int) : Wrapper("RTComponent", refer
 
     fun cycle(): Int = asInt("cycle")
 
+    fun spriteId(): Int = asInt("spriteId")
+
     fun x(): Int {
         val positionsX = Interfaces.positionsX()
         val index = arrayIndex()

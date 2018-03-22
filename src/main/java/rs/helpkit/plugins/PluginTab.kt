@@ -2,13 +2,14 @@ package rs.helpkit.plugins
 
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
-import rs.helpkit.api.game.Client
-import rs.helpkit.api.game.Interfaces
+import rs.helpkit.api.game.GameTab
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
+import rs.helpkit.util.io.Resources
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Rectangle
+import java.awt.image.BufferedImage
 
 @Manifest(
         author = "Static",
@@ -18,35 +19,31 @@ import java.awt.Rectangle
 )
 class PluginTab : Plugin(), Renderable {
 
-    val PARENT_FIXED = 548
-    val PARENT_RESIZABLE = 161
-    val PARENT_RESIZABLE_STONES = 164
+    var tabImage: BufferedImage = Resources.img("/images/ui/tab.png")
+    var tabSelectedImage: BufferedImage = Resources.img("/images/ui/tab-selected.png")
 
-    var bounds: Rectangle = Rectangle(0, 0, 0, 0)
+    var bounds: Rectangle? = null
+    var viewing: Boolean = false
 
     override fun validate(): Boolean {
         return true
     }
 
-    @Schedule(5000)
+    @Schedule(100)
     fun testInterfaces() {
-        val match = Interfaces.findChild { child ->
-            if (child.hidden() || -Math.abs(child.cycle()) + Math.abs(Client.cycle()) > 5) {
-                return@findChild false
-            }
-            val actions = child.actions()
-            if (actions != null && actions.isNotEmpty()) {
-                return@findChild actions[0] == "Options"
-            }
-            return@findChild false
-        }
-        if (match != null) {
-            bounds = match.bounds()
-        }
+        bounds = GameTab.OPTIONS.component()?.bounds()
+        viewing = GameTab.current() == GameTab.OPTIONS
     }
 
     override fun render(g: Graphics2D) {
-        g.color = Color.GREEN
-        g.draw(bounds)
+        if (bounds != null) {
+            g.color = Color.GREEN
+//            g.draw(bounds)
+            if (viewing) {
+                g.drawImage(tabSelectedImage, bounds!!.x, bounds!!.y, null)
+            } else {
+                g.drawImage(tabImage, bounds!!.x, bounds!!.y, null)
+            }
+        }
     }
 }

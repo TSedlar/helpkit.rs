@@ -3,6 +3,10 @@ package rs.helpkit.api.rsui
 import java.awt.Graphics2D
 import java.awt.Rectangle
 
+/**
+ * @author Tyler Sedlar
+ * @since 3/21/2018
+ */
 abstract class FXChildComponent : FXComponent() {
 
     var parent: RSWindow? = null

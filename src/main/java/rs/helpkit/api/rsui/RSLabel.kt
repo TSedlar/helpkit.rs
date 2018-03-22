@@ -5,6 +5,10 @@ import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
 
+/**
+ * @author Tyler Sedlar
+ * @since 3/21/2018
+ */
 class RSLabel(x: Int, y: Int) : FXChildComponent() {
 
     private var text: Bind<String>? = null

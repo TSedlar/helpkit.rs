@@ -2,6 +2,10 @@ package rs.helpkit.api.rsui
 
 import java.awt.Graphics2D
 
+/**
+ * @author Tyler Sedlar
+ * @since 3/21/2018
+ */
 abstract class RSWindow(w: Int, h: Int) : FXComponent() {
 
     protected val children: MutableList<FXComponent> = ArrayList()

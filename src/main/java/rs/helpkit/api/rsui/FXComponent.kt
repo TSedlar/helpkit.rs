@@ -7,6 +7,10 @@ import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import java.awt.event.MouseMotionListener
 
+/**
+ * @author Tyler Sedlar
+ * @since 3/21/2018
+ */
 abstract class FXComponent : Renderable {
 
     companion object {

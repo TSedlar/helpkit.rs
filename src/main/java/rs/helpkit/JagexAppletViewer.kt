@@ -76,7 +76,7 @@ object JagexAppletViewer {
     }
 
     @Throws(Throwable::class)
-    fun run(targetFile: String): OSRSContainer {
+    fun run(targetFile: String): OSRSContainer? {
         val jar = File(targetFile)
         val loader = URLClassLoader.newInstance(arrayOf(jar.toURI().toURL()))
 

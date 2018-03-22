@@ -4,6 +4,10 @@ import rs.helpkit.util.io.Resources
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
+/**
+ * @author Tyler Sedlar
+ * @since 3/21/2018
+ */
 class RSImage(x: Int, y: Int) : FXChildComponent() {
 
     var image: BufferedImage? = null

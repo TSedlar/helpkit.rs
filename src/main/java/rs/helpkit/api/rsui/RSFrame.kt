@@ -3,6 +3,10 @@ package rs.helpkit.api.rsui
 import java.awt.Color
 import java.awt.Graphics2D
 
+/**
+ * @author Tyler Sedlar
+ * @since 3/21/2018
+ */
 class RSFrame(w: Int, h: Int) : RSWindow(w, h) {
 
     init {

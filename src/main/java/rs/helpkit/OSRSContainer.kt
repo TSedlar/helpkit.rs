@@ -14,6 +14,7 @@ import rs.helpkit.internal.event.VarpbitEventChecker
 import rs.helpkit.plugins.Example
 import rs.helpkit.pref.HKConfig
 import rs.helpkit.pref.RSPreferences
+import rs.helpkit.util.io.Resources
 import java.applet.Applet
 import java.awt.*
 import java.awt.event.ComponentAdapter
@@ -66,6 +67,7 @@ class OSRSContainer(applet: Applet) {
             }
         }
         plugins.forEach { bus.register(it) }
+        Resources.installFonts()
         customCanvas.consumers.add({ g ->
             plugins.stream()
                     .filter { p -> p.enabled && p.validate() && p is Renderable }

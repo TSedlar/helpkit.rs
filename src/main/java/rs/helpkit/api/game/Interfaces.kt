@@ -65,6 +65,16 @@ object Interfaces {
         return null
     }
 
+    fun findChild(parent: Int, filter: (child: RTComponent) -> Boolean): RTComponent? {
+        childrenAt(parent).forEach { child ->
+            val match = findChild(child, filter)
+            if (match != null) {
+                return match
+            }
+        }
+        return null
+    }
+
     fun validate(parent: Int): Boolean {
         val widgets = raw()
         return widgets != null && parent >= 0 && parent < widgets.size && widgets[parent] != null

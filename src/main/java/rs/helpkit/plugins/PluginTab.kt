@@ -30,7 +30,7 @@ class PluginTab : Plugin(), Renderable {
 
     @Schedule(5000)
     fun testInterfaces() {
-        val match = Interfaces.findChild { child ->
+        val match = Interfaces.findChild(PARENT_FIXED, { child ->
             if (child.hidden()) {
                 return@findChild false
             }
@@ -39,10 +39,11 @@ class PluginTab : Plugin(), Renderable {
                 return@findChild actions[0] == "Options"
             }
             return@findChild false
-        }
+        })
         if (match != null) {
             bounds = match.bounds()
             println(bounds) // doesn't seem to work in fixed mode if you change from resizeable->fixed
+            println("${match.cycle()}, ${Client.cycle()}")
         }
     }
 

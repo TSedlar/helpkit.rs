@@ -29,6 +29,12 @@ class RSFrame(w: Int, h: Int) : RSWindow(w, h) {
         private var FRAME_PATCH_RIGHT: Color = Color(107, 98, 84)
     }
 
+    override fun add(child: FXComponent) {
+        super.add(child)
+        child.xOff = 5
+        child.yOff = 5
+    }
+
     override fun render(g: Graphics2D, rx: Int, ry: Int) {
         g.color = Color.BLACK
         g.fillRect(rx, ry, w, h)
@@ -168,12 +174,5 @@ class RSFrame(w: Int, h: Int) : RSWindow(w, h) {
         g.fillRect(rx + 1 + w - 4, ry + 1 + h - 5, 1, 1)
         g.color = FRAME_CORNER_BOLT_BR
         g.fillRect(rx + 1 + w - 4, ry + 1 + h - 5, 1, 1)
-    }
-
-    override fun render(g: Graphics2D) {
-        if (visible) {
-            render(g, x, y)
-            children.forEach { child -> child.render(g, x + 5, y + 5) }
-        }
     }
 }

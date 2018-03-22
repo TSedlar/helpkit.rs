@@ -4,15 +4,21 @@ import java.awt.Graphics2D
 
 abstract class RSWindow(w: Int, h: Int) : FXComponent() {
 
-    protected val children: MutableList<FXChildComponent> = ArrayList()
+    protected val children: MutableList<FXComponent> = ArrayList()
 
     init {
         this.w = w
         this.h = h
+        onDrag({ _, _, absX, absY ->
+            x = absX - (w / 2)
+            y = absY - (h / 2)
+        })
     }
 
-    fun add(child: FXChildComponent) {
-        child.parent = this
+    open fun add(child: FXComponent) {
+        if (child is FXChildComponent) {
+            child.parent = this
+        }
         children.add(child)
     }
 
@@ -20,8 +26,11 @@ abstract class RSWindow(w: Int, h: Int) : FXComponent() {
 
     override fun render(g: Graphics2D) {
         if (visible) {
-            render(g, x, y)
-            children.forEach { child -> child.render(g, x, y) }
+            render(g, x + xOff, y + yOff)
+            children
+                    .filter { child -> child is FXChildComponent }
+                    .map { child -> child as FXChildComponent }
+                    .forEach { child -> child.render(g, x + xOff, y + yOff) }
         }
     }
 }

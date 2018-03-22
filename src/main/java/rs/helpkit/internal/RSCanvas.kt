@@ -1,15 +1,15 @@
 package rs.helpkit.internal
 
 import rs.helpkit.api.raw.Fields
+import rs.helpkit.api.rsui.FXComponent
 import rs.helpkit.api.util.Time
 import rs.helpkit.util.fx.GraphicsState
 import java.applet.Applet
-import java.awt.Canvas
-import java.awt.Dimension
-import java.awt.Graphics
-import java.awt.Graphics2D
+import java.awt.*
+import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
 import java.util.*
+
 
 /**
  * @author Tyler Sedlar
@@ -30,6 +30,40 @@ class RSCanvas(private var original: Canvas?) : Canvas() {
         bounds = original?.bounds
         raw = BufferedImage(GAME_SIZE.width, GAME_SIZE.height, BufferedImage.TYPE_3BYTE_BGR)
         buffer = BufferedImage(GAME_SIZE.width, GAME_SIZE.height, BufferedImage.TYPE_3BYTE_BGR)
+        val eventQueue = Toolkit.getDefaultToolkit().systemEventQueue
+        eventQueue.push(object : EventQueue() {
+            override fun dispatchEvent(e: AWTEvent) {
+                var block = false
+                if (e is MouseEvent) {
+                    FXComponent.VISIBLE_COMPONENTS.forEach { component ->
+                        val bounds = component.exactBounds()
+                        if (bounds.contains(e.point)) {
+                            val tx = e.x - bounds.x
+                            val ty = e.y - bounds.y
+                            val translated = MouseEvent(e.component, e.id, e.`when`, e.modifiersEx, tx, ty,
+                                    e.x, e.y, e.clickCount, e.isPopupTrigger, e.button)
+                            component.mouseListeners.forEach { ml ->
+                                when {
+                                    e.id == MouseEvent.MOUSE_CLICKED -> ml.mouseClicked(translated)
+                                    e.id == MouseEvent.MOUSE_PRESSED -> ml.mousePressed(translated)
+                                    e.id == MouseEvent.MOUSE_RELEASED -> ml.mouseReleased(translated)
+                                }
+                            }
+                            component.mouseMotionListeners.forEach { ml ->
+                                when {
+                                    e.id == MouseEvent.MOUSE_MOVED -> ml.mouseMoved(translated)
+                                    e.id == MouseEvent.MOUSE_DRAGGED -> ml.mouseDragged(translated)
+                                }
+                            }
+                            block = true
+                        }
+                    }
+                }
+                if (!block) {
+                    super.dispatchEvent(e)
+                }
+            }
+        })
     }
 
     fun normalize() {

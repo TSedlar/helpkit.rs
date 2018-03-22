@@ -4,7 +4,6 @@ import rs.helpkit.api.util.Bind
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
-import java.awt.font.LineMetrics
 
 class RSLabel(x: Int, y: Int) : FXChildComponent() {
 
@@ -39,9 +38,10 @@ class RSLabel(x: Int, y: Int) : FXChildComponent() {
 
     override fun render(g: Graphics2D, rx: Int, ry: Int) {
         val str = text?.value()
-        val metrics: LineMetrics = g.fontMetrics.getLineMetrics(str, g)
+        super.w = g.fontMetrics.getStringBounds(str, g).width.toInt()
+        super.h = g.fontMetrics.getStringBounds(str, g).height.toInt()
         g.color = color
         g.font = font
-        g.drawString(str, rx + x, ry + y + (metrics.ascent - metrics.descent).toInt())
+        g.drawString(str, rx + x + xOff + 1, ry + y + yOff + h - 1)
     }
 }

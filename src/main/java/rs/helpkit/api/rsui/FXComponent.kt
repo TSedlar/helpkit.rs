@@ -1,14 +1,40 @@
 package rs.helpkit.api.rsui
 
 import rs.helpkit.api.util.Renderable
+import java.awt.Rectangle
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
+import java.awt.event.MouseListener
+import java.awt.event.MouseMotionListener
 
 abstract class FXComponent : Renderable {
+
+    companion object {
+        val VISIBLE_COMPONENTS: MutableList<FXComponent> = ArrayList()
+    }
 
     var x: Int = 0
     var y: Int = 0
     var w: Int = 0
     var h: Int = 0
-    var visible: Boolean = true
+    var xOff: Int = 0
+    var yOff: Int = 0
+    var visible: Boolean = false
+        set(visible) {
+            field = visible
+            if (visible) {
+                VISIBLE_COMPONENTS.add(this)
+            } else {
+                VISIBLE_COMPONENTS.remove(this)
+            }
+        }
+
+    val mouseListeners: MutableList<MouseListener> = ArrayList()
+    val mouseMotionListeners: MutableList<MouseMotionListener> = ArrayList()
+
+    init {
+        visible = true
+    }
 
     var width: Int
         get() = this.w
@@ -20,4 +46,46 @@ abstract class FXComponent : Renderable {
         set(h) {
             this.h = h
         }
+
+    fun bounds(): Rectangle {
+        return Rectangle(x + xOff, y + yOff, w, h)
+    }
+
+    open fun exactBounds(): Rectangle = bounds()
+
+    fun onClick(callback: (x: Int, y: Int) -> Unit): FXComponent {
+        mouseListeners.add(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent) {
+                callback(e.x, e.y)
+            }
+        })
+        return this
+    }
+
+    fun onHover(callback: (x: Int, y: Int) -> Unit): FXComponent {
+        mouseMotionListeners.add(object: MouseAdapter() {
+            override fun mouseMoved(e: MouseEvent) {
+                callback(e.x, e.y)
+            }
+        })
+        return this
+    }
+
+    fun onDrag(callback: (x: Int, y: Int, absX: Int, absY: Int) -> Unit): FXComponent {
+        mouseMotionListeners.add(object: MouseAdapter() {
+            override fun mouseDragged(e: MouseEvent) {
+                callback(e.x, e.y, e.xOnScreen, e.yOnScreen)
+            }
+        })
+        return this
+    }
+
+    fun onDrag(callback: (x: Int, y: Int) -> Unit): FXComponent {
+        mouseMotionListeners.add(object: MouseAdapter() {
+            override fun mouseDragged(e: MouseEvent) {
+                callback(e.x, e.y)
+            }
+        })
+        return this
+    }
 }

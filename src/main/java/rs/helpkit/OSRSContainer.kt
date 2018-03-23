@@ -5,6 +5,7 @@ import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.slf4j.LoggerFactory
 import rs.helpkit.api.Plugin
+import rs.helpkit.api.game.GameMenu
 import rs.helpkit.api.manifest
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Time
@@ -21,6 +22,7 @@ import java.applet.Applet
 import java.awt.*
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
+import java.awt.geom.Area
 import java.awt.image.BufferedImage
 
 /**
@@ -100,6 +102,12 @@ class OSRSContainer(applet: Applet) {
         Resources.installFonts()
 
         customCanvas.consumers.add({ g ->
+            if (GameMenu.visible()) {
+                val bounds = GameMenu.bounds()
+                val outside = Area(customCanvas.bounds)
+                outside.subtract(Area(bounds))
+                g.clip(outside)
+            }
             plugins.stream()
                     .filter { p -> p.enabled && p.validate() && p is Renderable }
                     .forEach { p -> (p as Renderable).render(g) }

@@ -2,6 +2,8 @@ package rs.helpkit.api
 
 import rs.helpkit.api.util.Schedule
 import rs.helpkit.api.util.Time
+import java.awt.event.MouseEvent
+import javax.swing.event.MouseInputListener
 
 fun hasManifest(clazz: Class<*>): Boolean = clazz.getAnnotation(Manifest::class.java) != null
 
@@ -13,7 +15,7 @@ fun Plugin.manifest(): Manifest? {
  * @author Tyler Sedlar
  * @since 3/20/2018
  */
-abstract class Plugin : Thread() {
+abstract class Plugin : Thread(), MouseInputListener {
 
     var enabled = true
 
@@ -42,5 +44,26 @@ abstract class Plugin : Thread() {
                 }).start()
             }
         }
+    }
+
+    override fun mouseReleased(e: MouseEvent) {
+    }
+
+    override fun mouseMoved(e: MouseEvent) {
+    }
+
+    override fun mouseEntered(e: MouseEvent) {
+    }
+
+    override fun mouseDragged(e: MouseEvent) {
+    }
+
+    override fun mouseClicked(e: MouseEvent) {
+    }
+
+    override fun mouseExited(e: MouseEvent) {
+    }
+
+    override fun mousePressed(e: MouseEvent) {
     }
 }

@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent
  */
 object GameMenu {
 
-    val CUSTOM_MENU_ADAPTERS: MutableMap<String, MouseAdapter> = HashMap()
+    val VALID_CUSTOM_MENU_ITEMS: MutableMap<String, CustomMenuItem> = HashMap()
 
     fun visible(): Boolean = Fields.asBoolean("Client#menuOpen")
 
@@ -96,14 +96,8 @@ object GameMenu {
                             GameMenu.itemCount++
                             Fields.setInt("Client#menuHeight", GameMenu.height() + 15, null)
                             Fields.setInt("Client#menuY", GameMenu.y() - 15, null)
-                            val itemBounds = GameMenu.boundsAt(idx)
-                            CUSTOM_MENU_ADAPTERS.put(item.text, object: MouseAdapter() {
-                                override fun mousePressed(e: MouseEvent) {
-                                    if (itemBounds.contains(e.point)) {
-                                        item.handler()
-                                    }
-                                }
-                            })
+                            item.bounds = GameMenu.boundsAt(idx)
+                            VALID_CUSTOM_MENU_ITEMS[item.text] = item
                         }
                     }
                     val width = (longestText.length * 7.5).toInt()
@@ -113,7 +107,7 @@ object GameMenu {
                 }
             }
         } else {
-            items.forEach { CUSTOM_MENU_ADAPTERS.remove(it.text) }
+            items.forEach { VALID_CUSTOM_MENU_ITEMS.remove(it.text) }
         }
     }
 }

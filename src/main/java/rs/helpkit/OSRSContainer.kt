@@ -59,7 +59,7 @@ class OSRSContainer(applet: Applet) {
         val pluginClasses = reflections.getSubTypesOf(Plugin::class.java)
         return pluginClasses.mapNotNull { clazz ->
             try {
-                val plugin = clazz.newInstance()
+                val plugin = clazz.constructors[0].newInstance() as Plugin
                 if (plugin.manifest() == null) {
                     logger.info("${clazz.name} is of type Plugin, but does not have a Manifest")
                     return@mapNotNull null
@@ -82,7 +82,7 @@ class OSRSContainer(applet: Applet) {
         loader = applet.javaClass.classLoader
         canvas = applet.getComponent(0) as Canvas
         window = findWindow(canvas)
-        customCanvas = RSCanvas(canvas)
+        customCanvas = RSCanvas(this, canvas)
         hideAllButCanvas(applet)
         loadHooks()
         hookReloader.start()
@@ -155,7 +155,6 @@ class OSRSContainer(applet: Applet) {
             Time.sleep(1000)
             i++
         }
-        customCanvas = RSCanvas(canvas)
         panel!!.addComponentListener(object : ComponentAdapter() {
             override fun componentResized(e: ComponentEvent?) {
                 val size = panel!!.size

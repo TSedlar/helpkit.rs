@@ -1,6 +1,8 @@
 package rs.helpkit.internal
 
+import rs.helpkit.OSRSContainer
 import rs.helpkit.api.game.GameMenu
+import rs.helpkit.api.rsui.FXChildComponent
 import rs.helpkit.api.rsui.FXComponent
 import java.awt.event.*
 import javax.swing.event.MouseInputAdapter
@@ -12,92 +14,123 @@ import javax.swing.event.MouseInputAdapter
 object InputRedirector {
 
     @JvmStatic
-    fun createMouseAdapter(initialMouseListeners: Array<MouseListener>,
+    fun createMouseAdapter(container : OSRSContainer, initialMouseListeners: Array<MouseListener>,
                            initialMouseMotionListeners: Array<MouseMotionListener>,
                            initialMouseWheelListeners: Array<MouseWheelListener>): MouseInputAdapter {
         return object : MouseInputAdapter() {
             override fun mouseEntered(e: MouseEvent) {
-                if (!execFXMouseEvents(e)) {
+                if (!execFXMouseEvents(container, e)) {
                     initialMouseListeners.forEach { ml -> ml.mouseEntered(e) }
                 }
             }
 
             override fun mouseExited(e: MouseEvent) {
-                if (!execFXMouseEvents(e)) {
+                if (!execFXMouseEvents(container, e)) {
                     initialMouseListeners.forEach { ml -> ml.mouseExited(e) }
                 }
             }
 
             override fun mouseClicked(e: MouseEvent) {
-                if (!execFXMouseEvents(e)) {
+                if (!execFXMouseEvents(container, e)) {
                     initialMouseListeners.forEach { ml -> ml.mouseClicked(e) }
                 }
             }
 
             override fun mousePressed(e: MouseEvent) {
-                if (!execFXMouseEvents(e)) {
+                if (!execFXMouseEvents(container, e)) {
                     initialMouseListeners.forEach { ml -> ml.mousePressed(e) }
                 }
             }
 
             override fun mouseReleased(e: MouseEvent) {
-                if (!execFXMouseEvents(e)) {
+                if (!execFXMouseEvents(container, e)) {
                     initialMouseListeners.forEach { ml -> ml.mouseReleased(e) }
                 }
             }
 
             override fun mouseMoved(e: MouseEvent) {
-                if (!execFXMouseEvents(e)) {
+                if (!execFXMouseEvents(container, e)) {
                     initialMouseMotionListeners.forEach { mml -> mml.mouseMoved(e) }
                 }
             }
 
             override fun mouseDragged(e: MouseEvent) {
-                if (!execFXMouseEvents(e)) {
+                if (!execFXMouseEvents(container, e)) {
                     initialMouseMotionListeners.forEach { mml -> mml.mouseDragged(e) }
                 }
             }
 
             override fun mouseWheelMoved(e: MouseWheelEvent) {
-                if (!execFXMouseEvents(e)) {
+                if (!execFXMouseEvents(container, e)) {
                     initialMouseWheelListeners.forEach { mml -> mml.mouseWheelMoved(e) }
                 }
             }
         }
     }
 
-    fun execFXMouseEvents(e: MouseEvent): Boolean {
+    fun execFXMouseEvents(container: OSRSContainer, e: MouseEvent): Boolean {
         var block = false
         FXComponent.VISIBLE_COMPONENTS.forEach { component ->
-            val bounds = component.exactBounds()
-            if (bounds.contains(e.point)) {
-                val tx = e.x - bounds.x
-                val ty = e.y - bounds.y
-                val translated = MouseEvent(e.component, e.id, e.`when`, e.modifiersEx, tx, ty,
-                        e.x, e.y, e.clickCount, e.isPopupTrigger, e.button)
-                component.mouseListeners.forEach { ml ->
-                    when {
-                        e.id == MouseEvent.MOUSE_CLICKED -> ml.mouseClicked(translated)
-                        e.id == MouseEvent.MOUSE_PRESSED -> ml.mousePressed(translated)
-                        e.id == MouseEvent.MOUSE_RELEASED -> ml.mouseReleased(translated)
-                    }
-                }
-                component.mouseMotionListeners.forEach { ml ->
-                    when {
-                        e.id == MouseEvent.MOUSE_MOVED -> ml.mouseMoved(translated)
-                        e.id == MouseEvent.MOUSE_DRAGGED -> ml.mouseDragged(translated)
-                    }
-                }
-                block = true
-            }
-        }
-        if (e.id == MouseEvent.MOUSE_PRESSED) {
-            GameMenu.CUSTOM_MENU_ADAPTERS.values.forEach {
-                if (GameMenu.visible()) {
-                    it.mousePressed(e)
+            var usable = true
+            if (component is FXChildComponent) {
+                if (!component.parent?.visible!!) {
+                    usable = false
                 }
             }
+            if (!component.visible) {
+                usable = false
+            }
+            if (usable) {
+                val bounds = component.exactBounds()
+                if (bounds.contains(e.point)) {
+                    val tx = e.x - bounds.x
+                    val ty = e.y - bounds.y
+                    val translated = MouseEvent(e.component, e.id, e.`when`, e.modifiersEx, tx, ty,
+                            e.x, e.y, e.clickCount, e.isPopupTrigger, e.button)
+                    component.mouseListeners.forEach { ml ->
+                        when {
+                            e.id == MouseEvent.MOUSE_CLICKED -> ml.mouseClicked(translated)
+                            e.id == MouseEvent.MOUSE_PRESSED -> ml.mousePressed(translated)
+                            e.id == MouseEvent.MOUSE_RELEASED -> ml.mouseReleased(translated)
+                        }
+                    }
+                    component.mouseMotionListeners.forEach { ml ->
+                        when {
+                            e.id == MouseEvent.MOUSE_MOVED -> ml.mouseMoved(translated)
+                            e.id == MouseEvent.MOUSE_DRAGGED -> ml.mouseDragged(translated)
+                        }
+                    }
+                    block = true
+                }
+            }
         }
-        return block && !GameMenu.visible()
+        when {
+            e.id == MouseEvent.MOUSE_CLICKED -> {
+                container.plugins.forEach { it.mouseClicked(e) }
+            }
+            e.id == MouseEvent.MOUSE_PRESSED -> {
+                container.plugins.forEach { it.mousePressed(e) }
+                if (e.button == MouseEvent.BUTTON1) {
+                    GameMenu.VALID_CUSTOM_MENU_ITEMS.values.forEach {
+                        if (GameMenu.visible()) {
+                            if (it.bounds?.contains(e.point)!!) {
+                                block = false
+                                it.handler()
+                            }
+                        }
+                    }
+                }
+            }
+            e.id == MouseEvent.MOUSE_RELEASED -> {
+                container.plugins.forEach { it.mouseReleased(e) }
+            }
+            e.id == MouseEvent.MOUSE_MOVED -> {
+                container.plugins.forEach { it.mouseMoved(e) }
+            }
+            e.id == MouseEvent.MOUSE_DRAGGED -> {
+                container.plugins.forEach { it.mouseDragged(e) }
+            }
+        }
+        return block
     }
 }

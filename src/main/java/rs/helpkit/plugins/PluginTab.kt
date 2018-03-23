@@ -11,6 +11,7 @@ import rs.helpkit.api.game.wrapper.CustomMenuItem
 import rs.helpkit.api.game.wrapper.RTComponent
 import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.raw.Methods
+import rs.helpkit.api.raw.Wrapper
 import rs.helpkit.api.rsui.RSTabContentPanel
 import rs.helpkit.api.rsui.RSWindow
 import rs.helpkit.api.util.Renderable
@@ -23,6 +24,7 @@ import java.awt.Rectangle
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
+import java.util.*
 
 @Manifest(
         author = "Static",
@@ -63,19 +65,20 @@ class PluginTab : Plugin(), Renderable {
         }?.parent()?.parent()?.parent()?.parent()
     }
 
-    init {
-        GameMenu.CUSTOM_MENU_ADAPTERS.put("CUSTOM_TAB_CLOSE", object : MouseAdapter() {
-            override fun mousePressed(e: MouseEvent) {
-                if (GameMenu.visible()) {
-                    val actions = GameMenu.actions()
-                    if (actions != null && actions[GameMenu.itemCount - 1] == "Options") {
-                        if (GameMenu.boundsAt(0).contains(e.point)) {
-                            customWindow = null
-                        }
+    override fun mousePressed(e: MouseEvent) {
+        if (GameMenu.visible() && e.button == MouseEvent.BUTTON1) {
+            val actions = GameMenu.actions()
+            if (actions != null && actions[GameMenu.itemCount - 1] == "Options") {
+                if (GameMenu.boundsAt(0).contains(e.point)) {
+                    if (customWindow != null) {
+                        customWindow!!.visible = false
                     }
+                    customWindow = null
+                    GameTab.OPTIONS.component()?.toggleClickEvent()
+                    Fields.set("GameMenu#visible", false, null)
                 }
             }
-        })
+        }
     }
 
     @Schedule(100)
@@ -98,35 +101,24 @@ class PluginTab : Plugin(), Renderable {
             }
         }
         contentBounds = contents?.bounds()
-        if (options != null) {
-//            Time.sleep(5000)
-
-//            Methods.invoke("Client#addMessage", null, 0, "", "poggers", null)
-//            val array = Fields.asArray("RTComponent#mousePressListener", options.get())
-//            val loader = OSRSContainer.INSTANCE!!.loader
-//            val x =  loader.loadClass("m").getDeclaredMethod("t")
-//            println(x)
-//            array?.forEach { obj ->
-////                println(obj)
-//            }
-        }
     }
 
     override fun render(g: Graphics2D) {
         g.color = Color.GREEN
         if (bounds != null && customWindow != null) {
+            customWindow!!.visible = viewing
             if (viewing) {
                 g.drawImage(tabSelectedImage, bounds!!.x, bounds!!.y, null)
             } else {
                 g.drawImage(tabImage, bounds!!.x, bounds!!.y, null)
             }
-            if (customWindow != null && contentBounds != null) {
+            if (contentBounds != null) {
                 customWindow!!.x = contentBounds!!.x
                 customWindow!!.y = contentBounds!!.y
                 customWindow!!.width = contentBounds!!.width
                 customWindow!!.height = contentBounds!!.height
-                customWindow!!.render(g)
             }
+            customWindow!!.render(g)
         }
         g.color = Color.GREEN
         customMenuBounds.forEach { bounds -> g.draw(bounds) }

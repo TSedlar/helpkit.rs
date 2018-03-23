@@ -3,6 +3,7 @@ package rs.helpkit.api.game.wrapper
 import rs.helpkit.OSRSContainer
 import rs.helpkit.api.raw.Wrapper
 import rs.helpkit.api.game.Interfaces
+import rs.helpkit.api.raw.Methods
 import java.awt.Point
 import java.awt.Rectangle
 import java.awt.event.MouseEvent
@@ -77,6 +78,8 @@ class RTComponent(referent: Any?, var index: Int) : Wrapper("RTComponent", refer
 
     fun spriteId(): Int = asInt("spriteId")
 
+    fun contentType(): Int = asInt("contentType")
+
     fun x(): Int {
         val positionsX = Interfaces.positionsX()
         val index = arrayIndex()
@@ -130,20 +133,13 @@ class RTComponent(referent: Any?, var index: Int) : Wrapper("RTComponent", refer
     }
 
     fun toggleClickEvent() {
-        val x = x()
-        val y = y()
-        val now = System.currentTimeMillis()
-        OSRSContainer.INSTANCE!!.customCanvas.initialMouseListeners[0].mousePressed(MouseEvent(
-                OSRSContainer.INSTANCE!!.canvas, MouseEvent.MOUSE_PRESSED, now, 0, x, y,
-                1, false, MouseEvent.BUTTON1
-        ))
-        OSRSContainer.INSTANCE!!.customCanvas.initialMouseListeners[0].mouseClicked(MouseEvent(
-                OSRSContainer.INSTANCE!!.canvas, MouseEvent.MOUSE_CLICKED, now + 20, 0, x, y,
-                1, false, MouseEvent.BUTTON1
-        ))
-        OSRSContainer.INSTANCE!!.customCanvas.initialMouseListeners[0].mouseReleased(MouseEvent(
-                OSRSContainer.INSTANCE!!.canvas, MouseEvent.MOUSE_RELEASED, now + 20, 0, x, y,
-                1, false, MouseEvent.BUTTON1
-        ))
+        val id = rawId()
+        val x = x() + (width() / 2)
+        val y = y() + (height() / 2)
+        val actions = actions()
+        if (actions != null && !actions.isEmpty()) {
+            val action = actions[0]
+            Methods.invoke("Client#processAction", null, -1, id, 57, 1, action, "", x, y)
+        }
     }
 }

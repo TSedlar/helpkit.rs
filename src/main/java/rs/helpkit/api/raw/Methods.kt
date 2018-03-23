@@ -1,6 +1,7 @@
 package rs.helpkit.api.raw
 
 import rs.helpkit.internal.HookLoader
+import java.util.*
 
 /**
  * @author Tyler Sedlar
@@ -30,7 +31,7 @@ object Methods {
                 parameters.add(HookLoader.OPAQUES[key]?.value())
             }
             return try {
-                handle.invokeWithArguments(parameters)
+                handle.invokeWithArguments(*parameters.toTypedArray())
             } catch (t: Throwable) {
                 t.printStackTrace()
                 null

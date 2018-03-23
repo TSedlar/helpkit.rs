@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import java.awt.event.MouseMotionListener
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * @author Tyler Sedlar
@@ -14,7 +15,7 @@ import java.awt.event.MouseMotionListener
 abstract class FXComponent : Renderable {
 
     companion object {
-        val VISIBLE_COMPONENTS: MutableList<FXComponent> = ArrayList()
+        val VISIBLE_COMPONENTS: MutableList<FXComponent> = CopyOnWriteArrayList()
     }
 
     var x: Int = 0

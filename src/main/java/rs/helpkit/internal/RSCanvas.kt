@@ -1,5 +1,6 @@
 package rs.helpkit.internal
 
+import rs.helpkit.OSRSContainer
 import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.util.Time
 import rs.helpkit.util.fx.GraphicsState
@@ -15,7 +16,7 @@ import javax.swing.event.MouseInputAdapter
  * @author Tyler Sedlar
  * @since 3/20/2018
  */
-class RSCanvas(private var original: Canvas) : Canvas() {
+class RSCanvas(private var container: OSRSContainer, private var original: Canvas) : Canvas() {
 
     var buffer: BufferedImage? = null
     var raw: BufferedImage? = null
@@ -38,7 +39,7 @@ class RSCanvas(private var original: Canvas) : Canvas() {
         initialMouseListeners = original.mouseListeners
         initialMouseMotionListeners = original.mouseMotionListeners
         initialMouseWheelListeners = original.mouseWheelListeners
-        mouseInputAdapter = InputRedirector.createMouseAdapter(initialMouseListeners,
+        mouseInputAdapter = InputRedirector.createMouseAdapter(container, initialMouseListeners,
                 initialMouseMotionListeners, initialMouseWheelListeners)
     }
 

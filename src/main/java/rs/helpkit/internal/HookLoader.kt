@@ -20,6 +20,7 @@ object HookLoader {
 
     val LONG_MAP: MutableMap<String, Boolean> = ConcurrentHashMap()
 
+    val CLASSES: MutableMap<String, Class<*>> = ConcurrentHashMap()
     val FIELDS: MutableMap<String, MethodHandle> = ConcurrentHashMap()
     val METHODS: MutableMap<String, MethodHandle> = ConcurrentHashMap()
 
@@ -39,28 +40,31 @@ object HookLoader {
         val fields = TSVListing.load(HKConfig.path(HKConfig.DATA, "fields.tsv"))
         fields.lines.removeAt(0) // remove header
         fields.lines.parallelStream().forEach { line ->
-            val key = line[0]
-            if (line[1] == "null") {
-                println("BROKEN HOOK @ " + key)
-            } else {
-                INVERSE_FIELD_MAP[line[1]] = line[0]
-                val splits = line[1].split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                val className = splits[0]
-                val fieldName = splits[1]
-                try {
-                    val clazz = loader.loadClass(className)
-                    val field = Classes.findField(clazz, { it.name == fieldName })
-                    if (field == null) {
-                        println("HOOK NOT FOUND @ " + key)
-                    } else {
-                        LONG_MAP[key] = field.type == Long::class.javaPrimitiveType
-                        DIRECT_FIELDS[key] = field
-                        FIELDS[key] = MethodHandles.lookup().unreflectGetter(field)
+            if (!line.isEmpty() && line.size >= 2) {
+                val key = line[0]
+                if (line[1] == "null") {
+                    println("BROKEN HOOK @ " + key)
+                } else {
+                    INVERSE_FIELD_MAP[line[1]] = line[0]
+                    val splits = line[1].split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    val className = splits[0]
+                    val fieldName = splits[1]
+                    try {
+                        val clazz = loader.loadClass(className)
+                        CLASSES.put(key.split("#")[0], clazz)
+                        val field = Classes.findField(clazz, { it.name == fieldName })
+                        if (field == null) {
+                            println("HOOK NOT FOUND @ " + key)
+                        } else {
+                            LONG_MAP[key] = field.type == Long::class.javaPrimitiveType
+                            DIRECT_FIELDS[key] = field
+                            FIELDS[key] = MethodHandles.lookup().unreflectGetter(field)
+                        }
+                    } catch (e: ClassNotFoundException) {
+                        e.printStackTrace()
+                    } catch (e: IllegalAccessException) {
+                        e.printStackTrace()
                     }
-                } catch (e: ClassNotFoundException) {
-                    e.printStackTrace()
-                } catch (e: IllegalAccessException) {
-                    e.printStackTrace()
                 }
             }
         }

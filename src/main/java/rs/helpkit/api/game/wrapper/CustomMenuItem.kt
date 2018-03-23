@@ -1,3 +1,8 @@
 package rs.helpkit.api.game.wrapper
 
-class CustomMenuItem(val text: String, val handler: () -> Unit)
+import java.awt.Rectangle
+
+class CustomMenuItem(val text: String, val handler: () -> Unit) {
+
+    var bounds: Rectangle? = null
+}

@@ -1,17 +1,13 @@
 package rs.helpkit.plugins
 
-import rs.helpkit.OSRSContainer
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
 import rs.helpkit.api.game.GameMenu
 import rs.helpkit.api.game.GameTab
 import rs.helpkit.api.game.Interfaces
-import rs.helpkit.api.game.Players
 import rs.helpkit.api.game.wrapper.CustomMenuItem
 import rs.helpkit.api.game.wrapper.RTComponent
 import rs.helpkit.api.raw.Fields
-import rs.helpkit.api.raw.Methods
-import rs.helpkit.api.raw.Wrapper
 import rs.helpkit.api.rsui.RSTabContentPanel
 import rs.helpkit.api.rsui.RSWindow
 import rs.helpkit.api.util.Renderable
@@ -21,7 +17,6 @@ import rs.helpkit.util.io.Resources
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Rectangle
-import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
 import java.util.*

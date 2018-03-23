@@ -61,7 +61,7 @@ class Example : Plugin(), Renderable {
 
     override fun render(g: Graphics2D) {
         g.color = Color.GREEN
-        g.drawString("data: " + frame.width, 100, 100)
+//        g.drawString("data: " + , 100, 100)
 //        frame.visible = false
         frame.render(g)
 //        g.color = Color.GREEN

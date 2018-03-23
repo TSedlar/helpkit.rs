@@ -8,6 +8,11 @@ import java.awt.Point
  * @since 3/20/2018
  */
 object Client {
+
+    val FRAME_STANDARD = 548
+    val FRAME_RESIZABLE = 161
+    val FRAME_RESIZABLE_WITH_PANELS = 164
+
     fun mouse(): Point {
         return Point(Fields.asInt("Client#mouseX"), Fields.asInt("Client#mouseY"))
     }
@@ -21,4 +26,8 @@ object Client {
     fun varps(): IntArray? = Fields.asIntArray("Client#varps")
 
     fun cycle(): Int = Fields.asInt("Client#globalCycle")
+
+    fun hudIndex(): Int = Fields.asInt("Client#hudIndex")
+
+    fun resizable(): Boolean = hudIndex() != FRAME_STANDARD
 }

@@ -118,7 +118,5 @@ class PluginTab : Plugin(), Renderable {
             }
             customPanel!!.render(g)
         }
-        g.color = Color.GREEN
-        GameMenu.VALID_CUSTOM_MENU_ITEMS.forEach { g.draw(it.value.bounds) }
     }
 }

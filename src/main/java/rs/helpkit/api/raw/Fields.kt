@@ -27,6 +27,20 @@ object Fields {
         }
     }
 
+    @JvmOverloads
+    fun setInt(key: String, value: Int, parent: Any? = null) {
+        if (key in HookLoader.DIRECT_FIELDS) {
+            try {
+                val factor = HookLoader.MULTIPLIERS[key]?.toInt() ?: 1
+                HookLoader.DIRECT_FIELDS[key].let {
+                    it?.set(parent, factor * value)
+                }
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
+        }
+    }
+
     /**
      * Gets the field's value of the given hook with its parent
      *

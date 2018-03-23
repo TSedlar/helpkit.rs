@@ -5,14 +5,12 @@ import rs.helpkit.api.Plugin
 import rs.helpkit.api.game.GameMenu
 import rs.helpkit.api.game.GameTab
 import rs.helpkit.api.game.Interfaces
-import rs.helpkit.api.game.wrapper.CustomMenuItem
 import rs.helpkit.api.game.wrapper.RTComponent
 import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.rsui.RSTabContentPanel
-import rs.helpkit.api.rsui.RSWindow
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
-import rs.helpkit.api.util.Time
+import rs.helpkit.plugins.tab.*
 import rs.helpkit.util.io.Resources
 import java.awt.Color
 import java.awt.Graphics2D
@@ -37,17 +35,16 @@ class PluginTab : Plugin(), Renderable {
 
     var viewing: Boolean = false
 
-    var customWindow: RSWindow? = null
-    var customMenuBounds: MutableList<Rectangle> = ArrayList()
+    var customTab: CustomTab? = null
+    var customPanel: RSTabContentPanel? = null
 
-    var expTracker = CustomMenuItem("XP Tracker", {
-        customWindow = RSTabContentPanel()
-        Thread({
-            // This is temporary only because we currently use a MouseEvent to open the tab
-            Time.sleep(250)
-            GameTab.OPTIONS.component()?.toggleClickEvent()
-        }).start()
-    })
+    val tabs = listOf(
+            GrandExchangeTab(this),
+            HiscoresTab(this),
+            NotesTab(this),
+            XPTrackerTab(this),
+            TimersTab(this)
+    )
 
     override fun validate(): Boolean {
         return true
@@ -65,10 +62,12 @@ class PluginTab : Plugin(), Renderable {
             val actions = GameMenu.actions()
             if (actions != null && actions[GameMenu.itemCount - 1] == "Options") {
                 if (GameMenu.boundsAt(0).contains(e.point)) {
-                    if (customWindow != null) {
-                        customWindow!!.visible = false
+                    if (customTab != null) {
+                        customTab = null
+                        customPanel!!.visible = false
                     }
-                    customWindow = null
+                    customTab = null
+                    customPanel = null
                     GameTab.OPTIONS.component()?.toggleClickEvent()
                     Fields.set("GameMenu#visible", false, null)
                 }
@@ -78,9 +77,7 @@ class PluginTab : Plugin(), Renderable {
 
     @Schedule(100)
     fun updateCustomMenuItems() {
-        GameMenu.addMenuItems({ actions, _ ->
-            actions[GameMenu.itemCount - 1] == "Options"
-        }, 1, expTracker)
+        CustomTab.updateMenuItems(tabs)
     }
 
     @Schedule(100)
@@ -92,7 +89,7 @@ class PluginTab : Plugin(), Renderable {
         if (contents != null) {
             val arrIdx = contents.arrayIndex()
             if (arrIdx != -1) {
-                Fields.set("RTComponent#hidden", customWindow != null, contents.get())
+                Fields.set("RTComponent#hidden", customPanel != null, contents.get())
             }
         }
         contentBounds = contents?.bounds()
@@ -100,22 +97,28 @@ class PluginTab : Plugin(), Renderable {
 
     override fun render(g: Graphics2D) {
         g.color = Color.GREEN
-        if (bounds != null && customWindow != null) {
-            customWindow!!.visible = viewing
+        if (bounds != null && customTab != null) {
+            if (customPanel == null) {
+                customPanel = customTab!!.panel()
+            }
+            customPanel!!.visible = viewing
             if (viewing) {
                 g.drawImage(tabSelectedImage, bounds!!.x, bounds!!.y, null)
             } else {
                 g.drawImage(tabImage, bounds!!.x, bounds!!.y, null)
             }
+            val tabCenterX = bounds!!.x + (bounds!!.width / 2) - (customTab!!.icon.width / 2)
+            val tabCenterY = bounds!!.y + (bounds!!.height / 2) - (customTab!!.icon.height / 2)
+            g.drawImage(customTab!!.icon, tabCenterX, tabCenterY, null)
             if (contentBounds != null) {
-                customWindow!!.x = contentBounds!!.x
-                customWindow!!.y = contentBounds!!.y
-                customWindow!!.width = contentBounds!!.width
-                customWindow!!.height = contentBounds!!.height
+                customPanel!!.x = contentBounds!!.x
+                customPanel!!.y = contentBounds!!.y
+                customPanel!!.width = contentBounds!!.width
+                customPanel!!.height = contentBounds!!.height
             }
-            customWindow!!.render(g)
+            customPanel!!.render(g)
         }
         g.color = Color.GREEN
-        customMenuBounds.forEach { bounds -> g.draw(bounds) }
+        GameMenu.VALID_CUSTOM_MENU_ITEMS.forEach { g.draw(it.value.bounds) }
     }
 }

@@ -3,8 +3,6 @@ package rs.helpkit.api.game
 import rs.helpkit.api.game.wrapper.CustomMenuItem
 import rs.helpkit.api.raw.Fields
 import java.awt.Rectangle
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
 
 /**
  * @author Tyler Sedlar
@@ -65,13 +63,14 @@ object GameMenu {
             if (actions != null && targets != null && opcodes != null && arg0 != null && arg1 != null && arg2 != null) {
                 if (filter(actions, targets)) {
                     var longestText = ""
+                    var added = 0
                     for (item in items) {
                         if (item.text !in actions.slice(IntRange(0, size))) {
                             val cancelOpcode = opcodes[0]
                             val cancelArg0 = arg0[0]
                             val cancelArg1 = arg1[0]
                             val cancelArg2 = arg2[0]
-                            val idx = (size - insertion) // size is changed every loop, no need to offset
+                            val idx = (size - insertion)
                             prepareMenuStrings(actions, idx)
                             prepareMenuStrings(targets, idx)
                             prepareMenuInts(opcodes, idx)
@@ -94,16 +93,19 @@ object GameMenu {
                             Fields.set("Client#menuArg1", arg1, null)
                             Fields.set("Client#menuArg2", arg2, null)
                             GameMenu.itemCount++
-                            Fields.setInt("Client#menuHeight", GameMenu.height() + 15, null)
-                            Fields.setInt("Client#menuY", GameMenu.y() - 15, null)
-                            item.bounds = GameMenu.boundsAt(idx)
                             VALID_CUSTOM_MENU_ITEMS[item.text] = item
+                            added++
                         }
                     }
-                    val width = (longestText.length * 7.5).toInt()
+                    val width = (longestText.length * 8)
                     if (width > GameMenu.width()) {
                         Fields.setInt("Client#menuWidth", width, null)
                     }
+                    Fields.setInt("Client#menuHeight", GameMenu.height() + (15 * added), null)
+                    Fields.setInt("Client#menuY", GameMenu.y() - (15 * added), null)
+                }
+                items.forEachIndexed { idx, item ->
+                    item.bounds = GameMenu.boundsAt(insertion + idx)
                 }
             }
         } else {

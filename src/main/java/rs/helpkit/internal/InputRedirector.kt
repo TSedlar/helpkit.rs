@@ -131,6 +131,9 @@ object InputRedirector {
                 container.plugins.forEach { it.mouseDragged(e) }
             }
         }
+        if (GameMenu.visible()) {
+            block = false
+        }
         return block
     }
 }

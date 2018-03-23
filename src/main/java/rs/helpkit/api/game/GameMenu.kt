@@ -19,7 +19,10 @@ object GameMenu {
 
     fun height(): Int = Fields.asInt("Client#menuHeight")
 
-    fun itemCount(): Int = Fields.asInt("Client#menuSize")
+//    fun itemCount(): Int = Fields.asInt("Client#menuSize")
+    var itemCount: Int
+        get() = Fields.asInt("Client#menuSize")
+        set(value) = Fields.setInt("Client#menuSize", value)
 
     fun opcodes(): IntArray? = Fields.asIntArray("Client#menuOpcodes")
 

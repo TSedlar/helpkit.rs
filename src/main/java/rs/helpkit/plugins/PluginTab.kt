@@ -14,8 +14,6 @@ import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Rectangle
 import java.awt.image.BufferedImage
-import java.util.*
-import kotlin.collections.ArrayList
 
 @Manifest(
         author = "Static",
@@ -41,7 +39,7 @@ class PluginTab : Plugin(), Renderable {
 
     fun addMenuItem(text: String) {
         if (GameMenu.visible()) {
-            val size = GameMenu.itemCount()
+            val size = GameMenu.itemCount
             val actions = GameMenu.actions()
             val targets = GameMenu.targets()
             val opcodes = GameMenu.opcodes()
@@ -66,6 +64,7 @@ class PluginTab : Plugin(), Renderable {
                 Fields.set("Client#menuArg0", arg0, null)
                 Fields.set("Client#menuArg1", arg1, null)
                 Fields.set("Client#menuArg2", arg2, null)
+                GameMenu.itemCount--
 //                Fields.set("Client#menuSize", size + 1, null) // borks
             }
         }

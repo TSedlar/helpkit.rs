@@ -17,11 +17,14 @@ import java.util.concurrent.ConcurrentHashMap
 object HookLoader {
 
     val INVERSE_FIELD_MAP: MutableMap<String, String> = ConcurrentHashMap()
+
     val LONG_MAP: MutableMap<String, Boolean> = ConcurrentHashMap()
 
     val FIELDS: MutableMap<String, MethodHandle> = ConcurrentHashMap()
     val METHODS: MutableMap<String, MethodHandle> = ConcurrentHashMap()
+
     val DIRECT_FIELDS: MutableMap<String, Field> = ConcurrentHashMap()
+
     val MULTIPLIERS: MutableMap<String, Number> = ConcurrentHashMap()
     val OPAQUES: MutableMap<String, Opaque> = ConcurrentHashMap()
 
@@ -119,6 +122,7 @@ object HookLoader {
                     if (method != null) {
                         if (hasOpaque) {
                             OPAQUES[line[1]]?.type = matchedOpaqueType!!
+                            OPAQUES[key] = OPAQUES[line[1]]!!
                         }
                         METHODS[key] = MethodHandles.lookup().unreflect(method)
                     }

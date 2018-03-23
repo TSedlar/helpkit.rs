@@ -6,9 +6,11 @@ import rs.helpkit.api.Plugin
 import rs.helpkit.api.game.GameMenu
 import rs.helpkit.api.game.GameTab
 import rs.helpkit.api.game.Interfaces
+import rs.helpkit.api.game.Players
 import rs.helpkit.api.game.wrapper.CustomMenuItem
 import rs.helpkit.api.game.wrapper.RTComponent
 import rs.helpkit.api.raw.Fields
+import rs.helpkit.api.raw.Methods
 import rs.helpkit.api.rsui.RSTabContentPanel
 import rs.helpkit.api.rsui.RSWindow
 import rs.helpkit.api.util.Renderable
@@ -43,7 +45,8 @@ class PluginTab : Plugin(), Renderable {
 
     var expTracker = CustomMenuItem("XP Tracker", {
         customWindow = RSTabContentPanel()
-        Thread({ // This is temporary only because we currently use a MouseEvent to open the tab
+        Thread({
+            // This is temporary only because we currently use a MouseEvent to open the tab
             Time.sleep(250)
             GameTab.OPTIONS.component()?.toggleClickEvent()
         }).start()
@@ -53,7 +56,7 @@ class PluginTab : Plugin(), Renderable {
         return true
     }
 
-    fun findTabContentPanel() : RTComponent? {
+    fun findTabContentPanel(): RTComponent? {
         return Interfaces.findChild { child ->
             val text = child.text()
             return@findChild text != null && text.contains("Advanced options")
@@ -61,7 +64,7 @@ class PluginTab : Plugin(), Renderable {
     }
 
     init {
-        GameMenu.CUSTOM_MENU_ADAPTERS.put("CUSTOM_TAB_CLOSE", object: MouseAdapter() {
+        GameMenu.CUSTOM_MENU_ADAPTERS.put("CUSTOM_TAB_CLOSE", object : MouseAdapter() {
             override fun mousePressed(e: MouseEvent) {
                 if (GameMenu.visible()) {
                     val actions = GameMenu.actions()
@@ -96,7 +99,9 @@ class PluginTab : Plugin(), Renderable {
         }
         contentBounds = contents?.bounds()
         if (options != null) {
-//            Time.sleep(1500)
+//            Time.sleep(5000)
+
+//            Methods.invoke("Client#addMessage", null, 0, "", "poggers", null)
 //            val array = Fields.asArray("RTComponent#mousePressListener", options.get())
 //            val loader = OSRSContainer.INSTANCE!!.loader
 //            val x =  loader.loadClass("m").getDeclaredMethod("t")

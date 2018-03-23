@@ -12,6 +12,7 @@ import rs.helpkit.api.rsui.RSTabContentPanel
 import rs.helpkit.api.rsui.RSWindow
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
+import rs.helpkit.api.util.Time
 import rs.helpkit.util.io.Resources
 import java.awt.Color
 import java.awt.Graphics2D
@@ -41,6 +42,10 @@ class PluginTab : Plugin(), Renderable {
 
     var expTracker = CustomMenuItem("XP Tracker", {
         customWindow = RSTabContentPanel()
+        Thread({ // This is temporary only because we currently use a MouseEvent to open the tab
+            Time.sleep(250)
+            GameTab.OPTIONS.component()?.toggleClickEvent()
+        }).start()
     })
 
     override fun validate(): Boolean {
@@ -89,10 +94,6 @@ class PluginTab : Plugin(), Renderable {
             }
         }
         contentBounds = contents?.bounds()
-        if (customWindow != null && !viewing) {
-            // force tab to options
-            options?.toggleClickEvent()
-        }
     }
 
     override fun render(g: Graphics2D) {

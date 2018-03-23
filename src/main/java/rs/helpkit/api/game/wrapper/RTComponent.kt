@@ -1,9 +1,11 @@
 package rs.helpkit.api.game.wrapper
 
+import rs.helpkit.OSRSContainer
 import rs.helpkit.api.raw.Wrapper
 import rs.helpkit.api.game.Interfaces
 import java.awt.Point
 import java.awt.Rectangle
+import java.awt.event.MouseEvent
 
 class RTComponent(referent: Any?, var index: Int) : Wrapper("RTComponent", referent) {
 
@@ -125,5 +127,23 @@ class RTComponent(referent: Any?, var index: Int) : Wrapper("RTComponent", refer
 
     fun contains(p: Point): Boolean {
         return contains(p.x, p.y)
+    }
+
+    fun toggleClickEvent() {
+        val x = x()
+        val y = y()
+        val now = System.currentTimeMillis()
+        OSRSContainer.INSTANCE!!.customCanvas.initialMouseListeners[0].mousePressed(MouseEvent(
+                OSRSContainer.INSTANCE!!.canvas, MouseEvent.MOUSE_PRESSED, now, 0, x, y,
+                1, false, MouseEvent.BUTTON1
+        ))
+        OSRSContainer.INSTANCE!!.customCanvas.initialMouseListeners[0].mouseClicked(MouseEvent(
+                OSRSContainer.INSTANCE!!.canvas, MouseEvent.MOUSE_CLICKED, now + 20, 0, x, y,
+                1, false, MouseEvent.BUTTON1
+        ))
+        OSRSContainer.INSTANCE!!.customCanvas.initialMouseListeners[0].mouseReleased(MouseEvent(
+                OSRSContainer.INSTANCE!!.canvas, MouseEvent.MOUSE_RELEASED, now + 20, 0, x, y,
+                1, false, MouseEvent.BUTTON1
+        ))
     }
 }

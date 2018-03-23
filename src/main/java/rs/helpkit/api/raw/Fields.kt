@@ -1,12 +1,16 @@
 package rs.helpkit.api.raw
 
 import rs.helpkit.internal.HookLoader
+import java.math.BigInteger
+
 
 /**
  * @author Tyler Sedlar
  * @since 3/20/2018
  */
 object Fields {
+
+    private val X64_BIG_INT = BigInteger((1L shl 32).toString())
 
     /**
      * Sets the field's value of the given hook with its parent
@@ -31,9 +35,13 @@ object Fields {
     fun setInt(key: String, value: Int, parent: Any? = null) {
         if (key in HookLoader.DIRECT_FIELDS) {
             try {
-                val factor = HookLoader.MULTIPLIERS[key]?.toInt() ?: 1
+                var encoder = 1
+                if (key in HookLoader.MULTIPLIERS) {
+                    encoder = BigInteger.valueOf(HookLoader.MULTIPLIERS[key]!!.toLong())
+                            .modInverse(X64_BIG_INT).toInt()
+                }
                 HookLoader.DIRECT_FIELDS[key].let {
-                    it?.set(parent, factor * value)
+                    it?.set(parent, encoder * value)
                 }
             } catch (t: Throwable) {
                 t.printStackTrace()

@@ -31,13 +31,17 @@ import java.awt.image.BufferedImage
  */
 class OSRSContainer(applet: Applet) {
 
+    companion object {
+        var INSTANCE: OSRSContainer? = null
+    }
+
     private val logger = LoggerFactory.getLogger(OSRSContainer::class.java)
 
-    private val loader: ClassLoader
-    private var canvas: Canvas
-    private var customCanvas: RSCanvas
-    private var window: Window
-    private var panel: Panel? = null
+    val loader: ClassLoader
+    var canvas: Canvas
+    var customCanvas: RSCanvas
+    var window: Window
+    var panel: Panel? = null
     private val hookReloader = HookReloaderService(HKConfig.path("data")) {
         loadHooks()
     }
@@ -73,6 +77,7 @@ class OSRSContainer(applet: Applet) {
     }
 
     init {
+        INSTANCE = this
         println("Game has loaded")
         loader = applet.javaClass.classLoader
         canvas = applet.getComponent(0) as Canvas

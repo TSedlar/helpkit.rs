@@ -24,9 +24,9 @@ class RSCanvas(private var original: Canvas) : Canvas() {
     private var hidden = false
     private var running = false
 
-    private var initialMouseListeners: Array<MouseListener> = emptyArray()
-    private var initialMouseMotionListeners: Array<MouseMotionListener> = emptyArray()
-    private var initialMouseWheelListeners: Array<MouseWheelListener> = emptyArray()
+    val initialMouseListeners: Array<MouseListener>
+    val initialMouseMotionListeners: Array<MouseMotionListener>
+    val initialMouseWheelListeners: Array<MouseWheelListener>
     private var mouseInputAdapter: MouseInputAdapter? = null
 
     val consumers: MutableList<(Graphics2D) -> Unit> = ArrayList()
@@ -85,7 +85,7 @@ class RSCanvas(private var original: Canvas) : Canvas() {
     }
 
     override fun hashCode(): Int {
-        return original!!.hashCode()
+        return original.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {

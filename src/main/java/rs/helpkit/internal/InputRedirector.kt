@@ -1,5 +1,6 @@
 package rs.helpkit.internal
 
+import rs.helpkit.api.game.GameMenu
 import rs.helpkit.api.rsui.FXComponent
 import java.awt.event.*
 import javax.swing.event.MouseInputAdapter
@@ -90,6 +91,13 @@ object InputRedirector {
                 block = true
             }
         }
-        return block
+        if (e.id == MouseEvent.MOUSE_PRESSED) {
+            GameMenu.CUSTOM_MENU_ADAPTERS.values.forEach {
+                if (GameMenu.visible()) {
+                    it.mousePressed(e)
+                }
+            }
+        }
+        return block && !GameMenu.visible()
     }
 }

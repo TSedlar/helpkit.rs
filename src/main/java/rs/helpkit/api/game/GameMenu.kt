@@ -27,5 +27,11 @@ object GameMenu {
 
     fun targets(): Array<String>? = Fields.asStringArray("Client#menuTargets")
 
+    fun arg0(): IntArray? = Fields.asIntArray("Client#menuArg0")
+
+    fun arg1(): IntArray? = Fields.asIntArray("Client#menuArg1")
+
+    fun arg2(): IntArray? = Fields.asIntArray("Client#menuArg2")
+
     fun bounds(): Rectangle = Rectangle(x(), y(), width(), height())
 }

@@ -59,6 +59,9 @@ class OSRSContainer(applet: Applet) {
                 if (plugin.manifest() == null) {
                     logger.info("${clazz.name} is of type Plugin, but does not have a Manifest")
                     return@mapNotNull null
+                } else if (plugin.manifest()?.enabled == false) {
+                    logger.debug("Not starting plugin ${clazz.name} since it is disabled")
+                    return@mapNotNull null
                 }
                 return@mapNotNull plugin
             } catch (e: IllegalAccessException) {

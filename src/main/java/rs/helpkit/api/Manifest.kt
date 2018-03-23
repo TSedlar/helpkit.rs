@@ -7,5 +7,6 @@ annotation class Manifest(
         val name: String,
         val description: String,
         val version: Double,
-        val loop: Boolean = true
+        val loop: Boolean = true,
+        val enabled: Boolean = true
 )

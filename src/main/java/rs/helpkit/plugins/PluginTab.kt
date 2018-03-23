@@ -1,5 +1,6 @@
 package rs.helpkit.plugins
 
+import rs.helpkit.OSRSContainer
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
 import rs.helpkit.api.game.GameMenu
@@ -94,6 +95,16 @@ class PluginTab : Plugin(), Renderable {
             }
         }
         contentBounds = contents?.bounds()
+        if (options != null) {
+//            Time.sleep(1500)
+//            val array = Fields.asArray("RTComponent#mousePressListener", options.get())
+//            val loader = OSRSContainer.INSTANCE!!.loader
+//            val x =  loader.loadClass("m").getDeclaredMethod("t")
+//            println(x)
+//            array?.forEach { obj ->
+////                println(obj)
+//            }
+        }
     }
 
     override fun render(g: Graphics2D) {

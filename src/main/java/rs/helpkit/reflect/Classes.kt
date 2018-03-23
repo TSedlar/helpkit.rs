@@ -17,13 +17,9 @@ object Classes {
      * @return The field matching the filter in the given class
      */
     fun findField(clazz: Class<*>, filter: (Field) -> Boolean): Field? {
-        for (field in clazz.declaredFields) {
-            if (filter(field)) {
-                field.isAccessible = true
-                return field
-            }
+        return clazz.declaredFields.find(filter)?.apply {
+            isAccessible = true
         }
-        return null
     }
 
     /**
@@ -34,12 +30,8 @@ object Classes {
      * @return The method matching the filter in the given class
      */
     fun findMethod(clazz: Class<*>, filter: (Method) -> Boolean): Method? {
-        for (method in clazz.declaredMethods) {
-            if (filter(method)) {
-                method.isAccessible = true
-                return method
-            }
+        return clazz.declaredMethods.find(filter)?.apply {
+            isAccessible = true
         }
-        return null
     }
 }

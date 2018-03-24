@@ -31,8 +31,7 @@ object Fields {
         }
     }
 
-    @JvmOverloads
-    fun setInt(key: String, value: Int, parent: Any? = null) {
+    private fun setNumber(key: String, transform: (number: Int) -> Number, parent: Any? = null) {
         if (key in HookLoader.DIRECT_FIELDS) {
             try {
                 var encoder = 1
@@ -41,12 +40,22 @@ object Fields {
                             .modInverse(X64_BIG_INT).toInt()
                 }
                 HookLoader.DIRECT_FIELDS[key].let {
-                    it?.set(parent, encoder * value)
+                    it?.set(parent, transform(encoder))
                 }
             } catch (t: Throwable) {
                 t.printStackTrace()
             }
         }
+    }
+
+    @JvmOverloads
+    fun setInt(key: String, value: Int, parent: Any? = null) {
+        setNumber(key, { (it * value).toInt() }, parent)
+    }
+
+    @JvmOverloads
+    fun setShort(key: String, value: Short, parent: Any? = null) {
+        setNumber(key, { (it * value).toShort() }, parent)
     }
 
     /**
@@ -87,6 +96,15 @@ object Fields {
     fun asInt(key: String, parent: Any? = null): Int {
         return try {
             get(key, parent) as Int
+        } catch (e: Exception) {
+            -1
+        }
+    }
+
+    @JvmOverloads
+    fun asShort(key: String, parent: Any? = null): Short {
+        return try {
+            get(key, parent) as Short
         } catch (e: Exception) {
             -1
         }

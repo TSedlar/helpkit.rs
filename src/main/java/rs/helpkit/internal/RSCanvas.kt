@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage
 import java.util.*
 import javax.swing.event.MouseInputAdapter
 
-
 /**
  * @author Tyler Sedlar
  * @since 3/20/2018
@@ -56,7 +55,7 @@ class RSCanvas(private var container: OSRSContainer, private var original: Canva
     }
 
     override fun getGraphics(): Graphics? {
-        val g = original!!.graphics
+        val g = original.graphics
         if (hidden) {
             g!!.color = background
             g.fillRect(0, 0, width, height)
@@ -104,6 +103,7 @@ class RSCanvas(private var container: OSRSContainer, private var original: Canva
                         bounds = original.bounds
                         original.mouseListeners.forEach { ml -> original.removeMouseListener(ml) }
                         original.mouseMotionListeners.forEach { mml -> original.removeMouseMotionListener(mml) }
+                        original.mouseWheelListeners.forEach { mwl -> original.removeMouseWheelListener(mwl) }
                         original.addMouseListener(mouseInputAdapter)
                         original.addMouseMotionListener(mouseInputAdapter)
                         original.addMouseWheelListener(mouseInputAdapter)

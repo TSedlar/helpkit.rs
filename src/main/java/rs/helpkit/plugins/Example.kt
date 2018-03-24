@@ -8,6 +8,7 @@ import rs.helpkit.api.game.Players
 import rs.helpkit.api.game.access.Varpbits
 import rs.helpkit.api.game.listener.event.GEOfferUpdated
 import rs.helpkit.api.game.listener.event.VarpChanged
+import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.rsui.FXComponent
 import rs.helpkit.api.rsui.RSFrame
 import rs.helpkit.api.rsui.RSImage
@@ -54,14 +55,15 @@ class Example : Plugin(), Renderable {
         println("Varbit@${event.index} = ${Varpbits.get()[event.index]}")
     }
 
-    @Schedule(1000)
+    @Schedule(100)
     fun updateData() {
         data = Players.local()?.name()?.text()
+//        Fields.setShort("Client#cameraZoom", 50, null)
     }
 
     override fun render(g: Graphics2D) {
         g.color = Color.GREEN
-//        g.drawString("data: " + , 100, 100)
+        g.drawString("data: " + Fields.asShort("Client#cameraZoom"), 100, 100)
 //        frame.visible = false
         frame.render(g)
 //        g.color = Color.GREEN

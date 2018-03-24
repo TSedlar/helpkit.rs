@@ -43,7 +43,7 @@ object HookLoader {
             if (!line.isEmpty() && line.size >= 2) {
                 val key = line[0]
                 if (line[1] == "null") {
-                    println("BROKEN HOOK @ " + key)
+                    println("BROKEN HOOK @ $key")
                 } else {
                     INVERSE_FIELD_MAP[line[1]] = line[0]
                     val splits = line[1].split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -51,10 +51,10 @@ object HookLoader {
                     val fieldName = splits[1]
                     try {
                         val clazz = loader.loadClass(className)
-                        CLASSES.put(key.split("#")[0], clazz)
+                        CLASSES[key.split("#")[0]] = clazz
                         val field = Classes.findField(clazz, { it.name == fieldName })
                         if (field == null) {
-                            println("HOOK NOT FOUND @ " + key)
+                            println("HOOK NOT FOUND @ $key")
                         } else {
                             LONG_MAP[key] = field.type == Long::class.javaPrimitiveType
                             DIRECT_FIELDS[key] = field

@@ -1,6 +1,7 @@
 package rs.helpkit.internal
 
 import rs.helpkit.OSRSContainer
+import rs.helpkit.api.game.Camera
 import rs.helpkit.api.game.GameMenu
 import rs.helpkit.api.rsui.FXChildComponent
 import rs.helpkit.api.rsui.FXComponent
@@ -61,7 +62,13 @@ object InputRedirector {
             }
 
             override fun mouseWheelMoved(e: MouseWheelEvent) {
-                if (!execFXMouseEvents(container, e)) {
+                if (Camera.inZoomArea(e)) {
+                    if (e.unitsToScroll < 0) {
+                        Camera.zoomIn(Math.abs(e.unitsToScroll * e.scrollAmount))
+                    } else {
+                        Camera.zoomOut(Math.abs(e.unitsToScroll * e.scrollAmount))
+                    }
+                } else {
                     initialMouseWheelListeners.forEach { mml -> mml.mouseWheelMoved(e) }
                 }
             }

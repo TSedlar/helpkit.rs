@@ -1,5 +1,6 @@
 package rs.helpkit.pref
 
+import rs.helpkit.api.game.Camera
 import java.awt.Dimension
 import java.awt.Point
 import java.io.File
@@ -36,13 +37,20 @@ object RSPreferences {
             PROPS.setProperty(Keys.DEFAULT_WORLD, Integer.toString(world))
         }
 
+    var defaultZoomLevel: Int
+        get() = Integer.parseInt(PROPS[Keys.DEFAULT_ZOOM_LEVEL].toString())
+        set(zoom) {
+            PROPS.setProperty(Keys.DEFAULT_ZOOM_LEVEL, Integer.toString(zoom))
+        }
+
     private interface Keys {
         companion object {
-            val DEFAULT_WORLD = "default_world"
-            val DEFAULT_WIDTH = "default_width"
-            val DEFAULT_HEIGHT = "default_height"
-            val DEFAULT_X = "default_x"
-            val DEFAULT_Y = "default_y"
+            const val DEFAULT_WORLD = "default_world"
+            const val DEFAULT_WIDTH = "default_width"
+            const val DEFAULT_HEIGHT = "default_height"
+            const val DEFAULT_X = "default_x"
+            const val DEFAULT_Y = "default_y"
+            const val DEFAULT_ZOOM_LEVEL = "default_zoom_level"
         }
     }
 
@@ -62,6 +70,7 @@ object RSPreferences {
         setIfInvalid(Keys.DEFAULT_HEIGHT, "503")
         setIfInvalid(Keys.DEFAULT_X, "-1")
         setIfInvalid(Keys.DEFAULT_Y, "-1")
+        setIfInvalid(Keys.DEFAULT_ZOOM_LEVEL, Camera.ZOOM_OUT_MAX.toString())
         Runtime.getRuntime().addShutdownHook(Thread {
             try {
                 FileOutputStream(propertyFile).use { out -> PROPS.store(out, "RSHelpKit preferences") }

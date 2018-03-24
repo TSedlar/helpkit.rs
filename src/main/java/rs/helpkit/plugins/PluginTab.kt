@@ -14,8 +14,10 @@ import rs.helpkit.plugins.tab.*
 import rs.helpkit.util.io.Resources
 import java.awt.Color
 import java.awt.Graphics2D
+import java.awt.Polygon
 import java.awt.Rectangle
 import java.awt.event.MouseEvent
+import java.awt.geom.Area
 import java.awt.image.BufferedImage
 import java.util.*
 

@@ -1,12 +1,14 @@
 package rs.helpkit.internal
 
 import rs.helpkit.OSRSContainer
-import rs.helpkit.api.raw.Fields
-import rs.helpkit.api.util.Time
 import rs.helpkit.util.fx.GraphicsState
-import java.applet.Applet
-import java.awt.*
-import java.awt.event.*
+import java.awt.Canvas
+import java.awt.Dimension
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.event.MouseListener
+import java.awt.event.MouseMotionListener
+import java.awt.event.MouseWheelListener
 import java.awt.image.BufferedImage
 import java.util.*
 import javax.swing.event.MouseInputAdapter
@@ -15,19 +17,18 @@ import javax.swing.event.MouseInputAdapter
  * @author Tyler Sedlar
  * @since 3/20/2018
  */
-class RSCanvas(private var container: OSRSContainer, private var original: Canvas) : Canvas() {
+class RSCanvas(container: OSRSContainer, var original: Canvas) : Canvas() {
 
     var buffer: BufferedImage? = null
     var raw: BufferedImage? = null
 
     private var normalized = false
     private var hidden = false
-    private var running = false
 
-    val initialMouseListeners: Array<MouseListener>
-    val initialMouseMotionListeners: Array<MouseMotionListener>
-    val initialMouseWheelListeners: Array<MouseWheelListener>
-    private var mouseInputAdapter: MouseInputAdapter? = null
+    private val initialMouseListeners: Array<MouseListener>
+    private val initialMouseMotionListeners: Array<MouseMotionListener>
+    private val initialMouseWheelListeners: Array<MouseWheelListener>
+    var mouseInputAdapter: MouseInputAdapter? = null
 
     val consumers: MutableList<(Graphics2D) -> Unit> = ArrayList()
 
@@ -90,37 +91,6 @@ class RSCanvas(private var container: OSRSContainer, private var original: Canva
 
     override fun equals(other: Any?): Boolean {
         return original == other
-    }
-
-    @Suppress("DEPRECATION") // Applet is deprecated in Java9
-    fun startReplacementTask(applet: Applet) {
-        if (!running) {
-            running = true
-            Thread {
-                while (running) {
-                    try {
-                        original = applet.getComponent(0) as Canvas
-                        bounds = original.bounds
-                        original.mouseListeners.forEach { ml -> original.removeMouseListener(ml) }
-                        original.mouseMotionListeners.forEach { mml -> original.removeMouseMotionListener(mml) }
-                        original.mouseWheelListeners.forEach { mwl -> original.removeMouseWheelListener(mwl) }
-                        original.addMouseListener(mouseInputAdapter)
-                        original.addMouseMotionListener(mouseInputAdapter)
-                        original.addMouseWheelListener(mouseInputAdapter)
-                        val producer = Fields["Client#interfaceProducer"]
-                        Fields.set("ComponentProducer#component", this, producer)
-                        Fields.set("GameEngine#canvas", this, applet)
-                        Time.sleep(1000)
-                    } catch (e: Exception) {
-                    }
-
-                }
-            }.start()
-        }
-    }
-
-    fun stopReplacementTask() {
-        running = false
     }
 
     companion object {

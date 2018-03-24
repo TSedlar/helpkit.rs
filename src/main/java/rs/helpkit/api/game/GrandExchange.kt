@@ -12,7 +12,7 @@ object GrandExchange {
     }
 
     fun offers(): List<GEOffer> {
-        val offers = Fields["Client#grandExchangeOffers"]
+        val offers = Fields["Client#exchangeOffers"]
         if (offers is Array<*>) {
             return offers.map { OfferBox(it) }
         }

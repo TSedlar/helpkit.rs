@@ -33,7 +33,7 @@ object Methods {
             return try {
                 handle.invokeWithArguments(*parameters.toTypedArray())
             } catch (t: Throwable) {
-                t.printStackTrace()
+//                t.printStackTrace()
                 null
             }
         }

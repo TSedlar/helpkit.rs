@@ -26,6 +26,7 @@ object Camera {
 
     fun setZoom() {
         Fields.setShort("Client#cameraZoom", this.level.toShort(), null)
+//        Fields.setShort("Client#cameraZoomIFace", this.level.toShort(), null)
     }
 
     fun zoomIn(increment: Int) {

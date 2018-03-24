@@ -1,5 +1,6 @@
 package rs.helpkit.api.game
 
+import rs.helpkit.api.game.wrapper.PacketContext
 import rs.helpkit.api.raw.Fields
 import java.awt.Point
 
@@ -30,4 +31,6 @@ object Client {
     fun hudIndex(): Int = Fields.asInt("Client#hudIndex")
 
     fun resizable(): Boolean = hudIndex() != FRAME_STANDARD
+
+    fun packetContext(): PacketContext = PacketContext(Fields["Client#packetContext"])
 }

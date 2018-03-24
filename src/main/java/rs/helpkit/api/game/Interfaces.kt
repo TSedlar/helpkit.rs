@@ -75,6 +75,10 @@ object Interfaces {
         return null
     }
 
+    fun findById(id: Int): RTComponent? {
+        return findChild { it.rawId() == id }
+    }
+
     fun validate(parent: Int): Boolean {
         val widgets = raw()
         return widgets != null && parent >= 0 && parent < widgets.size && widgets[parent] != null

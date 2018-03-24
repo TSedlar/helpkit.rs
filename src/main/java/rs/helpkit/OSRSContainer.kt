@@ -12,6 +12,8 @@ import rs.helpkit.api.util.Time
 import rs.helpkit.dev.services.HookReloaderService
 import rs.helpkit.internal.HookLoader
 import rs.helpkit.internal.RSCanvas
+import rs.helpkit.internal.RSInputStream
+import rs.helpkit.internal.ReplacementTasks
 import rs.helpkit.internal.event.EventChecker
 import rs.helpkit.internal.event.GEOfferEventChecker
 import rs.helpkit.internal.event.VarpbitEventChecker
@@ -86,6 +88,8 @@ class OSRSContainer(applet: Applet) {
         hideAllButCanvas(applet)
         loadHooks()
         hookReloader.start()
+        ReplacementTasks.Canvas.startReplacementTask(customCanvas, applet)
+        ReplacementTasks.Streams.startReplacementTask()
 
         val bus = EventBus()
         checkers.add(VarpbitEventChecker(bus))
@@ -170,7 +174,6 @@ class OSRSContainer(applet: Applet) {
                 RSPreferences.setDefaultLocation(window.x, window.y)
             }
         })
-        customCanvas.startReplacementTask(applet)
         window.revalidate()
         val size = RSPreferences.defaultSize
         canvas.preferredSize = size

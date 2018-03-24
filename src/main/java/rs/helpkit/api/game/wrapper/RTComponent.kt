@@ -1,12 +1,10 @@
 package rs.helpkit.api.game.wrapper
 
-import rs.helpkit.OSRSContainer
-import rs.helpkit.api.raw.Wrapper
 import rs.helpkit.api.game.Interfaces
 import rs.helpkit.api.raw.Methods
+import rs.helpkit.api.raw.Wrapper
 import java.awt.Point
 import java.awt.Rectangle
-import java.awt.event.MouseEvent
 
 class RTComponent(referent: Any?, var index: Int) : Wrapper("RTComponent", referent) {
 

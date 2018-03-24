@@ -20,7 +20,7 @@ object Fields {
      * @param parent The parent, if it exists, otherwise <tt>null</tt>.
      */
     @JvmOverloads
-    fun set(key: String, value: Any, parent: Any? = null) {
+    fun set(key: String, value: Any?, parent: Any? = null) {
         if (HookLoader.DIRECT_FIELDS.containsKey(key)) {
             val field = HookLoader.DIRECT_FIELDS[key]
             try {
@@ -50,7 +50,7 @@ object Fields {
 
     @JvmOverloads
     fun setInt(key: String, value: Int, parent: Any? = null) {
-        setNumber(key, { (it * value).toInt() }, parent)
+        setNumber(key, { (it * value) }, parent)
     }
 
     @JvmOverloads
@@ -69,15 +69,21 @@ object Fields {
     operator fun get(key: String, parent: Any? = null): Any? {
         val handle = HookLoader.FIELDS[key]
         if (handle == null) {
+            println("don't think so.. $key")
             return null
         } else {
             var value: Any? = try {
                 if (parent != null) {
+                    if (key == "PacketContext#packet") {
+//                        println("??")
+//                        println(HookLoader.DIRECT_FIELDS[key]!!.get(parent))
+                    }
                     handle.invokeWithArguments(parent)
                 } else {
                     handle.invokeWithArguments()
                 }
             } catch (t: Throwable) {
+//                t.printStackTrace()
                 null
             }
             if (HookLoader.MULTIPLIERS.containsKey(key) && value != null) {

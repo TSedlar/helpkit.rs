@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference
  */
 open class Wrapper(private val container: String, referent: Any?) : WeakReference<Any>(referent) {
 
-    private fun key(name: String): String = container + "#" + name
+    private fun key(name: String): String = "$container#$name"
 
     protected operator fun get(name: String): Any? = Fields[key(name), get()]
 

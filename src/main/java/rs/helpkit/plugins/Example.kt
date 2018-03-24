@@ -9,13 +9,13 @@ import rs.helpkit.api.game.access.Players
 import rs.helpkit.api.game.access.Varpbits
 import rs.helpkit.api.game.listener.event.GEOfferUpdated
 import rs.helpkit.api.game.listener.event.VarpChanged
-import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.rsui.RSFrame
 import rs.helpkit.api.rsui.RSImage
 import rs.helpkit.api.rsui.RSLabel
 import rs.helpkit.api.rsui.onClick
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
+import rs.helpkit.api.util.Time
 import rs.helpkit.util.io.Resources
 import java.awt.Color
 import java.awt.Graphics2D

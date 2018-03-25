@@ -33,7 +33,6 @@ class RSInputStream(original: InputStream) : FilterInputStream(original) {
 
     fun onPacketReceived() {
         Camera.setZoom()
-
         val context = Client.packetContext()
         if (context.validate()) {
             val packet = context.packet()
@@ -41,7 +40,15 @@ class RSInputStream(original: InputStream) : FilterInputStream(original) {
                 val id = packet.id()
                 val length = packet.length()
                 if (id == 12) {
-                    println("incoming: id=$id, length=$length")
+//                    println("incoming: id=$id, length=$length")
+//                    println("  packet: $packet")
+//                    val payload = try {
+//                        Fields["ByteBuffer#buffer", context.buffer()]
+//                    } catch (e: Exception) {
+//                        e.printStackTrace()
+//                        null
+//                    }
+//                    println("  payload: $payload")
                 }
             }
         }

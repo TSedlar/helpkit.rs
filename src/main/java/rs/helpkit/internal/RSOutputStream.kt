@@ -30,9 +30,9 @@ class RSOutputStream(original: OutputStream) : FilterOutputStream(original) {
 
     fun onPacketSent(node: PacketNode, packet: OutgoingPacket, id: Int, length: Int) {
         val payload = try {
-            val buffer = Fields["PacketNode#buffer", node]
-            Fields["ByteBuffer#buffer", buffer]
+            Fields["ByteBuffer#buffer", node.buffer()]
         } catch (e: Exception) {
+            e.printStackTrace()
             null
         }
 //        println("outgoing: id=$id, length=$length, payload=$payload")

@@ -2,9 +2,9 @@ package rs.helpkit.plugins
 
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
-import rs.helpkit.api.game.GameMenu
-import rs.helpkit.api.game.GameTab
-import rs.helpkit.api.game.Interfaces
+import rs.helpkit.api.game.access.GameMenu
+import rs.helpkit.api.game.access.GameTab
+import rs.helpkit.api.game.access.Interfaces
 import rs.helpkit.api.game.wrapper.RTComponent
 import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.rsui.RSTabContentPanel
@@ -14,12 +14,9 @@ import rs.helpkit.plugins.tab.*
 import rs.helpkit.util.io.Resources
 import java.awt.Color
 import java.awt.Graphics2D
-import java.awt.Polygon
 import java.awt.Rectangle
 import java.awt.event.MouseEvent
-import java.awt.geom.Area
 import java.awt.image.BufferedImage
-import java.util.*
 
 @Manifest(
         author = "Static",

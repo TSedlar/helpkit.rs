@@ -1,5 +1,6 @@
-package rs.helpkit.api.game
+package rs.helpkit.api.game.access
 
+import rs.helpkit.api.game.data.Sprites
 import rs.helpkit.api.raw.Fields
 import rs.helpkit.pref.RSPreferences
 import java.awt.Rectangle
@@ -25,17 +26,17 @@ object Camera {
     }
 
     fun setZoom() {
-        Fields.setShort("Client#cameraZoom", this.level.toShort(), null)
+        Fields.setShort("Client#cameraZoom", level.toShort(), null)
 //        Fields.setShort("Client#cameraZoomIFace", this.level.toShort(), null)
     }
 
     fun zoomIn(increment: Int) {
-        this.level = min(ZOOM_IN_MIN, level + increment)
+        level = min(ZOOM_IN_MIN, level + increment)
         setZoom()
     }
 
     fun zoomOut(increment: Int) {
-        this.level = max(ZOOM_OUT_MAX, level - increment)
+        level = max(ZOOM_OUT_MAX, level - increment)
         setZoom()
     }
 
@@ -53,6 +54,15 @@ object Camera {
         for (i in 0 until xs!!.size) {
             if (hs!![i] != vh) {
                 clickable.subtract(Area(Rectangle(xs[i], ys!![i], ws!![i], hs[i])))
+            }
+        }
+
+        Interfaces.findChild {
+            !it.hidden() && (it.spriteId() == Sprites.INTERFACE_EXIT || it.spriteId() == Sprites.INTERFACE_EXIT_HOVER)
+        }?.let {
+            val parent = it.parent()
+            if (parent != null) {
+                clickable.subtract(Area(parent.bounds()))
             }
         }
 

@@ -61,34 +61,42 @@ abstract class FXComponent : Renderable {
     fun onClick(callback: (x: Int, y: Int) -> Unit): FXComponent {
         mouseListeners.add(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                callback(e.x, e.y)
+                if (visible) {
+                    callback(e.x, e.y)
+                }
             }
         })
         return this
     }
 
     fun onHover(callback: (x: Int, y: Int) -> Unit): FXComponent {
-        mouseMotionListeners.add(object: MouseAdapter() {
+        mouseMotionListeners.add(object : MouseAdapter() {
             override fun mouseMoved(e: MouseEvent) {
-                callback(e.x, e.y)
+                if (visible) {
+                    callback(e.x, e.y)
+                }
             }
         })
         return this
     }
 
     fun onDrag(callback: (x: Int, y: Int, absX: Int, absY: Int) -> Unit): FXComponent {
-        mouseMotionListeners.add(object: MouseAdapter() {
+        mouseMotionListeners.add(object : MouseAdapter() {
             override fun mouseDragged(e: MouseEvent) {
-                callback(e.x, e.y, e.xOnScreen, e.yOnScreen)
+                if (visible) {
+                    callback(e.x, e.y, e.xOnScreen, e.yOnScreen)
+                }
             }
         })
         return this
     }
 
     fun onDrag(callback: (x: Int, y: Int) -> Unit): FXComponent {
-        mouseMotionListeners.add(object: MouseAdapter() {
+        mouseMotionListeners.add(object : MouseAdapter() {
             override fun mouseDragged(e: MouseEvent) {
-                callback(e.x, e.y)
+                if (visible) {
+                    callback(e.x, e.y)
+                }
             }
         })
         return this

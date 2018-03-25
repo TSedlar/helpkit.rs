@@ -1,5 +1,6 @@
-package rs.helpkit.api.game
+package rs.helpkit.api.game.access
 
+import rs.helpkit.api.game.data.GEOffer
 import rs.helpkit.api.game.wrapper.OfferBox
 import rs.helpkit.api.raw.Fields
 

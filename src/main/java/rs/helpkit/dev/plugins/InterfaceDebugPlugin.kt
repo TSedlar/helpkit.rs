@@ -2,8 +2,8 @@ package rs.helpkit.dev.plugins
 
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
-import rs.helpkit.api.game.Client
-import rs.helpkit.api.game.Interfaces
+import rs.helpkit.api.game.access.Client
+import rs.helpkit.api.game.access.Interfaces
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
 import java.awt.*

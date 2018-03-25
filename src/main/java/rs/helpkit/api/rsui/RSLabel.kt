@@ -33,7 +33,7 @@ class RSLabel(x: Int, y: Int) : FXChildComponent() {
         return this
     }
 
-    fun useFont(family: String, size: Int) : RSLabel {
+    fun useFont(family: String, size: Int): RSLabel {
         this.font = Font(family, Font.PLAIN, size)
         return this
     }

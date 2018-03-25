@@ -1,6 +1,6 @@
 package rs.helpkit.api.game.wrapper
 
-import rs.helpkit.api.game.GEOffer
+import rs.helpkit.api.game.data.GEOffer
 import rs.helpkit.api.raw.Wrapper
 
 

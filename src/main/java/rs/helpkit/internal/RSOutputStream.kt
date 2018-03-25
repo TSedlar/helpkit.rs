@@ -1,59 +1,40 @@
 package rs.helpkit.internal
 
-import rs.helpkit.api.game.wrapper.PacketContext
+import rs.helpkit.api.game.access.Client
+import rs.helpkit.api.game.wrapper.OutgoingPacket
+import rs.helpkit.api.game.wrapper.PacketNode
 import rs.helpkit.api.raw.Fields
-import rs.helpkit.api.raw.Methods
-import rs.helpkit.util.Serializer
 import java.io.FilterOutputStream
 import java.io.OutputStream
-import java.util.*
 
 /**
  * @author Tyler Sedlar
  * @since 3/24/2018
  */
-class RSOutputStream(var context: PacketContext, original: OutputStream): FilterOutputStream(original) {
-
-    val data: MutableList<Int> = ArrayList()
-
-    override fun write(b: Int) {
-//        println("write(int): $b")
-        data.add(b)
-        super.write(b)
-    }
-
-    override fun write(b: ByteArray?) {
-//        println("write(byte[]): ${Arrays.toString(b)}")
-        if (b != null) {
-            data.addAll(b.map { it.toInt() })
-        }
-        super.write(b)
-    }
-
-    override fun write(b: ByteArray?, off: Int, len: Int) {
-//        println("write(byte[], int, int): off=$off, len=$len, arr=${Arrays.toString(b)}")
-        if (b != null) {
-            data.addAll(b.map { it.toInt() })
-        }
-        super.write(b, off, len)
-    }
-
-    override fun close() {
-        println("closed")
-        super.close()
-    }
+class RSOutputStream(original: OutputStream) : FilterOutputStream(original) {
 
     override fun flush() {
-        val buf = Fields["PacketContext#packetBuffer", context.get()]
-        if (buf != null) {
-            val copy = Serializer.cloneObject(buf)
-            val op = Methods.invoke("PacketBuffer#readOpcode", copy)
-            if (op == 0) {
-                println("idle packet")
+        try {
+            Client.packetNodes().forEach { node ->
+                if (node.validate()) {
+                    val packet = node.packet()
+                    if (packet.validate()) {
+                        onPacketSent(node, packet, packet.id(), packet.length())
+                    }
+                }
             }
-            println("sent packet $op")
+        } catch (e: Exception) {
         }
-        data.clear()
         super.flush()
+    }
+
+    fun onPacketSent(node: PacketNode, packet: OutgoingPacket, id: Int, length: Int) {
+        val payload = try {
+            val buffer = Fields["PacketNode#buffer", node]
+            Fields["ByteBuffer#buffer", buffer]
+        } catch (e: Exception) {
+            null
+        }
+//        println("outgoing: id=$id, length=$length, payload=$payload")
     }
 }

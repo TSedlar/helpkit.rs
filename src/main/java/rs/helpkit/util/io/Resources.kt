@@ -1,9 +1,9 @@
 package rs.helpkit.util.io
 
 import java.awt.Font
-import java.io.File
 import java.awt.GraphicsEnvironment
 import java.awt.image.BufferedImage
+import java.io.File
 import javax.imageio.ImageIO
 
 object Resources {
@@ -27,7 +27,7 @@ object Resources {
     }
 
     @JvmStatic
-    fun img(path: String) : BufferedImage {
+    fun img(path: String): BufferedImage {
         return ImageIO.read(Resources::class.java.getResourceAsStream(path))
     }
 }

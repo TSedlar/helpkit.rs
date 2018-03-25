@@ -1,46 +1,30 @@
 package rs.helpkit.internal
 
-import rs.helpkit.api.game.Camera
-import rs.helpkit.api.game.Client
-import rs.helpkit.api.game.wrapper.PacketContext
+import rs.helpkit.api.game.access.Camera
+import rs.helpkit.api.game.access.Client
+import rs.helpkit.api.raw.Fields
 import java.io.FilterInputStream
 import java.io.InputStream
-import java.util.*
 
 /**
  * @author Tyler Sedlar
  * @since 3/24/2018
  */
-class RSInputStream(var context: PacketContext, original: InputStream) : FilterInputStream(original) {
+class RSInputStream(original: InputStream) : FilterInputStream(original) {
 
     private var prevCycle = 0
 
     override fun available(): Int {
-        val currCycle = Client.cycle()
-        if (prevCycle != currCycle) {
-            onCycle()
-            prevCycle = currCycle
+        try {
+            val currCycle = Client.cycle()
+            if (prevCycle != currCycle) {
+                onCycle()
+                prevCycle = currCycle
+            }
+            onPacketReceived()
+        } catch (e: Exception) {
         }
-        onPacketReceived()
         return super.available()
-    }
-
-    override fun read(): Int {
-        val read = super.read()
-//        println("read(): $read")
-        return read
-    }
-
-    override fun read(b: ByteArray?): Int {
-        val read = super.read(b)
-//        println("read(byte[]): $read")
-        return read
-    }
-
-    override fun read(b: ByteArray?, off: Int, len: Int): Int {
-        val read = super.read(b, off, len)
-//        println("read(byte[], int, int): off=$off, len=$len, return=$read")
-        return read
     }
 
     fun onCycle() {
@@ -49,5 +33,17 @@ class RSInputStream(var context: PacketContext, original: InputStream) : FilterI
 
     fun onPacketReceived() {
         Camera.setZoom()
+
+        val context = Client.packetContext()
+        if (context.validate()) {
+            val packet = context.packet()
+            if (packet.validate()) {
+                val id = packet.id()
+                val length = packet.length()
+                if (id == 12) {
+                    println("incoming: id=$id, length=$length")
+                }
+            }
+        }
     }
 }

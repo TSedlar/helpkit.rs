@@ -1,6 +1,6 @@
 package rs.helpkit.internal
 
-import rs.helpkit.api.game.Client
+import rs.helpkit.api.game.access.Client
 import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.util.Time
 import java.applet.Applet
@@ -52,13 +52,13 @@ object ReplacementTasks {
                                 val input = socket.input()
                                 if (input != null) {
                                     if (input !is RSInputStream) {
-                                        Fields.set("RSSocket#input", RSInputStream(context, input), socket.get())
+                                        Fields.set("RSSocket#input", RSInputStream(input), socket.get())
                                     }
                                 }
                                 val output = socket.output()
                                 if (output != null) {
                                     if (output !is RSOutputStream) {
-                                        Fields.set("RSSocket#output", RSOutputStream(context, output), socket.get())
+                                        Fields.set("RSSocket#output", RSOutputStream(output), socket.get())
                                     }
                                 }
                             }

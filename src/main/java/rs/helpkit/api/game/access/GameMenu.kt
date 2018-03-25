@@ -1,4 +1,4 @@
-package rs.helpkit.api.game
+package rs.helpkit.api.game.access
 
 import rs.helpkit.api.game.wrapper.CustomMenuItem
 import rs.helpkit.api.raw.Fields
@@ -52,14 +52,14 @@ object GameMenu {
 
     fun addMenuItems(filter: (actions: Array<String>, targets: Array<String>) -> Boolean,
                      insertion: Int, vararg items: CustomMenuItem) {
-        if (GameMenu.visible()) {
-            val size = GameMenu.itemCount
-            val actions = GameMenu.actions()
-            val targets = GameMenu.targets()
-            val opcodes = GameMenu.opcodes()
-            val arg0 = GameMenu.arg0()
-            val arg1 = GameMenu.arg1()
-            val arg2 = GameMenu.arg2()
+        if (visible()) {
+            val size = itemCount
+            val actions = actions()
+            val targets = targets()
+            val opcodes = opcodes()
+            val arg0 = arg0()
+            val arg1 = arg1()
+            val arg2 = arg2()
             if (actions != null && targets != null && opcodes != null && arg0 != null && arg1 != null && arg2 != null) {
                 if (filter(actions, targets)) {
                     var longestText = ""
@@ -92,20 +92,20 @@ object GameMenu {
                             Fields.set("Client#menuArg0", arg0, null)
                             Fields.set("Client#menuArg1", arg1, null)
                             Fields.set("Client#menuArg2", arg2, null)
-                            GameMenu.itemCount++
+                            itemCount++
                             VALID_CUSTOM_MENU_ITEMS[item.text] = item
                             added++
                         }
                     }
                     val width = (longestText.length * 8)
-                    if (width > GameMenu.width()) {
+                    if (width > width()) {
                         Fields.setInt("Client#menuWidth", width, null)
                     }
-                    Fields.setInt("Client#menuHeight", GameMenu.height() + (15 * added), null)
-                    Fields.setInt("Client#menuY", GameMenu.y() - (15 * added), null)
+                    Fields.setInt("Client#menuHeight", height() + (15 * added), null)
+                    Fields.setInt("Client#menuY", y() - (15 * added), null)
                 }
                 items.forEachIndexed { idx, item ->
-                    item.bounds = GameMenu.boundsAt(insertion + idx)
+                    item.bounds = boundsAt(insertion + idx)
                 }
             }
         } else {

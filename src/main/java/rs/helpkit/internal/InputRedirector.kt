@@ -1,11 +1,12 @@
 package rs.helpkit.internal
 
 import rs.helpkit.OSRSContainer
-import rs.helpkit.api.game.Camera
-import rs.helpkit.api.game.GameMenu
+import rs.helpkit.api.game.access.Camera
+import rs.helpkit.api.game.access.GameMenu
 import rs.helpkit.api.rsui.FXChildComponent
 import rs.helpkit.api.rsui.FXComponent
 import java.awt.event.*
+import javax.swing.SwingUtilities
 import javax.swing.event.MouseInputAdapter
 
 /**
@@ -15,7 +16,7 @@ import javax.swing.event.MouseInputAdapter
 object InputRedirector {
 
     @JvmStatic
-    fun createMouseAdapter(container : OSRSContainer, initialMouseListeners: Array<MouseListener>,
+    fun createMouseAdapter(container: OSRSContainer, initialMouseListeners: Array<MouseListener>,
                            initialMouseMotionListeners: Array<MouseMotionListener>,
                            initialMouseWheelListeners: Array<MouseWheelListener>): MouseInputAdapter {
         return object : MouseInputAdapter() {
@@ -104,7 +105,11 @@ object InputRedirector {
                     component.mouseMotionListeners.forEach { ml ->
                         when {
                             e.id == MouseEvent.MOUSE_MOVED -> ml.mouseMoved(translated)
-                            e.id == MouseEvent.MOUSE_DRAGGED -> ml.mouseDragged(translated)
+                            e.id == MouseEvent.MOUSE_DRAGGED -> {
+                                if (SwingUtilities.isLeftMouseButton(e)) {
+                                    ml.mouseDragged(translated)
+                                }
+                            }
                         }
                     }
                     block = true

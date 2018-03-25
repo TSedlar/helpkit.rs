@@ -1,5 +1,8 @@
-package rs.helpkit.api.game
+package rs.helpkit.api.game.data
 
+/**
+ * @since 3/20/2018
+ */
 internal data class GETransaction(
         override val itemsExchanged: Int,
         override val totalOfferQuantity: Int,

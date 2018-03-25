@@ -1,6 +1,6 @@
 package rs.helpkit.api.game.wrapper
 
-import rs.helpkit.api.game.Interfaces
+import rs.helpkit.api.game.access.Interfaces
 import rs.helpkit.api.raw.Methods
 import rs.helpkit.api.raw.Wrapper
 import java.awt.Point

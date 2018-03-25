@@ -1,6 +1,7 @@
-package rs.helpkit.api.game
+package rs.helpkit.api.game.access
 
 import rs.helpkit.api.game.wrapper.PacketContext
+import rs.helpkit.api.game.wrapper.PacketNode
 import rs.helpkit.api.raw.Fields
 import java.awt.Point
 
@@ -33,4 +34,14 @@ object Client {
     fun resizable(): Boolean = hudIndex() != FRAME_STANDARD
 
     fun packetContext(): PacketContext = PacketContext(Fields["Client#packetContext"])
+
+    fun packetNodes(): List<PacketNode> {
+        val list: MutableList<PacketNode> = ArrayList()
+        Fields.asArray("Client#packetNodes")?.forEach { node ->
+            if (node != null) {
+                list.add(PacketNode(node))
+            }
+        }
+        return list
+    }
 }

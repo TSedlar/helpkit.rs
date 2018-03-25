@@ -13,7 +13,7 @@ class Bind<T> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun value() : T {
+    fun value(): T {
         return if (value is Function<*>) {
             (value as () -> T).invoke()
         } else {

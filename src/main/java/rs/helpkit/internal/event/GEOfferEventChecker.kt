@@ -1,9 +1,9 @@
 package rs.helpkit.internal.event
 
 import com.google.common.eventbus.EventBus
-import rs.helpkit.api.game.GEOffer
-import rs.helpkit.api.game.GrandExchange
-import rs.helpkit.api.game.GETransaction
+import rs.helpkit.api.game.access.GrandExchange
+import rs.helpkit.api.game.data.GEOffer
+import rs.helpkit.api.game.data.GETransaction
 import rs.helpkit.api.game.listener.event.GEOfferUpdated
 
 /**

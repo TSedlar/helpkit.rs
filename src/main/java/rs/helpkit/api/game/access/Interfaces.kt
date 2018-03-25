@@ -1,4 +1,4 @@
-package rs.helpkit.api.game
+package rs.helpkit.api.game.access
 
 import rs.helpkit.api.game.wrapper.RTComponent
 import rs.helpkit.api.game.wrapper.node.RSHashTable
@@ -48,6 +48,25 @@ object Interfaces {
             }
         }
         return null
+    }
+
+    fun findAll(filter: (child: RTComponent) -> Boolean): List<RTComponent> {
+        val matching: MutableList<RTComponent> = ArrayList()
+        val raw = raw()
+        if (raw != null) {
+            for (i in 0..raw.size) {
+                childrenAt(i).forEach { findAll(it, filter, matching) }
+            }
+        }
+        return matching
+    }
+
+    private fun findAll(parent: RTComponent, filter: (child: RTComponent) -> Boolean,
+                        matches: MutableList<RTComponent>) {
+        if (filter(parent)) {
+            matches.add(parent)
+        }
+        parent.children().forEach { findAll(it, filter, matches) }
     }
 
     fun findChild(filter: (child: RTComponent) -> Boolean): RTComponent? {

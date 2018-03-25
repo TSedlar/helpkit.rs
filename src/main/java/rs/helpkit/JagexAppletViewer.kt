@@ -26,8 +26,7 @@ object JagexAppletViewer {
     @Suppress("DEPRECATION") // Applet is deprecated in Java9
     @Throws(ClassNotFoundException::class)
     private fun findAppletField(loader: ClassLoader): Field {
-        val viewer = loader.loadClass("app.appletviewer") ?:
-                throw IllegalStateException("app.appletviewer not found")
+        val viewer = loader.loadClass("app.appletviewer") ?: throw IllegalStateException("app.appletviewer not found")
         return Classes.findField(viewer) { field -> field.type == Applet::class.java }
                 ?: throw IllegalStateException("Applet not found")
     }

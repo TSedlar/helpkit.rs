@@ -2,7 +2,11 @@ package rs.helpkit.api.game.wrapper
 
 import rs.helpkit.api.raw.Wrapper
 
-class RSPacket(referent: Any?) : Wrapper("Packet", referent) {
+/**
+ * @author Tyler Sedlar
+ * @since 3/24/2018
+ */
+class IncomingPacket(referent: Any?) : Wrapper("IncomingPacket", referent) {
 
     fun id(): Int = asInt("id")
 

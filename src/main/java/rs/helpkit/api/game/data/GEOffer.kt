@@ -1,5 +1,8 @@
-package rs.helpkit.api.game
+package rs.helpkit.api.game.data
 
+/**
+ * @since 3/20/2018
+ */
 interface GEOffer {
     val itemsExchanged: Int
     val totalOfferQuantity: Int

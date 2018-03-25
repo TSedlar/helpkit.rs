@@ -1,7 +1,7 @@
 package rs.helpkit.internal.event
 
 import com.google.common.eventbus.EventBus
-import rs.helpkit.api.game.Client
+import rs.helpkit.api.game.access.Client
 import rs.helpkit.api.game.listener.event.VarpChanged
 
 /**

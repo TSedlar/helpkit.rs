@@ -1,6 +1,6 @@
 package rs.helpkit.pref
 
-import rs.helpkit.api.game.Camera
+import rs.helpkit.api.game.access.Camera
 import java.awt.Dimension
 import java.awt.Point
 import java.io.File

@@ -5,14 +5,13 @@ import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.slf4j.LoggerFactory
 import rs.helpkit.api.Plugin
-import rs.helpkit.api.game.GameMenu
+import rs.helpkit.api.game.access.GameMenu
 import rs.helpkit.api.manifest
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Time
 import rs.helpkit.dev.services.HookReloaderService
 import rs.helpkit.internal.HookLoader
 import rs.helpkit.internal.RSCanvas
-import rs.helpkit.internal.RSInputStream
 import rs.helpkit.internal.ReplacementTasks
 import rs.helpkit.internal.event.EventChecker
 import rs.helpkit.internal.event.GEOfferEventChecker

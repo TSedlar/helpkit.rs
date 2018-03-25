@@ -3,6 +3,7 @@ package rs.helpkit.internal
 import rs.helpkit.api.game.access.Client
 import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.util.Time
+import rs.helpkit.reflect.ObjectProxy
 import java.applet.Applet
 
 /**
@@ -67,6 +68,27 @@ object ReplacementTasks {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
+                }
+            }).start()
+        }
+    }
+
+    object Proxies {
+
+        fun startReplacementTask() {
+            Thread({
+                var set = false
+                while (!set) {
+                    val ctx = Client.packetContext()
+                    if (ctx.validate()) {
+                        val buffer = ctx.buffer()
+                        if (buffer != null) {
+                            val field = HookLoader.DIRECT_FIELDS["PacketContext#buffer"]!!
+                            set = ObjectProxy.override(field, arrayOf(Int::class.java), arrayOf(5000), ctx.get())
+                            println("override PacketContext#buffer @ $buffer")
+                        }
+                    }
+                    Time.sleep(50)
                 }
             }).start()
         }

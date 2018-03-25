@@ -89,6 +89,7 @@ class OSRSContainer(applet: Applet) {
         hookReloader.start()
         ReplacementTasks.Canvas.startReplacementTask(customCanvas, applet)
         ReplacementTasks.Streams.startReplacementTask()
+        ReplacementTasks.Proxies.startReplacementTask()
 
         val bus = EventBus()
         checkers.add(VarpbitEventChecker(bus))

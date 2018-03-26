@@ -113,6 +113,8 @@ object InputRedirector {
                         }
                     }
                     block = true
+                } else {
+                    component.mouseListeners.forEach { it.mouseExited(e) }
                 }
             }
         }

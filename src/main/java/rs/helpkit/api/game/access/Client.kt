@@ -44,4 +44,10 @@ object Client {
         }
         return list
     }
+
+    fun levels(): IntArray? = Fields.asIntArray("Client#currentSkillLevels")
+
+    fun baseLevels(): IntArray? = Fields.asIntArray("Client#baseSkillLevels")
+
+    fun experiences(): IntArray? = Fields.asIntArray("Client#skillExperiences")
 }

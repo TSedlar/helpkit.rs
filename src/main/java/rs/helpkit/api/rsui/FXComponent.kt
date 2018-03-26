@@ -69,14 +69,23 @@ abstract class FXComponent : Renderable {
         return this
     }
 
-    fun onHover(callback: (x: Int, y: Int) -> Unit): FXComponent {
+    fun onHover(onHover: (x: Int, y: Int) -> Unit, onExit: (() -> Unit)? = null): FXComponent {
         mouseMotionListeners.add(object : MouseAdapter() {
             override fun mouseMoved(e: MouseEvent) {
                 if (visible) {
-                    callback(e.x, e.y)
+                    onHover(e.x, e.y)
                 }
             }
         })
+        onExit?.let {
+            mouseListeners.add(object: MouseAdapter() {
+                override fun mouseExited(e: MouseEvent) {
+                    if (visible) {
+                        onExit()
+                    }
+                }
+            })
+        }
         return this
     }
 

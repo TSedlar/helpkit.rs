@@ -5,18 +5,18 @@ import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
 import rs.helpkit.api.game.access.GrandExchange
 import rs.helpkit.api.game.access.Players
+import rs.helpkit.api.game.access.Skills
 import rs.helpkit.api.game.access.Varpbits
 import rs.helpkit.api.game.listener.event.GEOfferUpdated
 import rs.helpkit.api.game.listener.event.VarpChanged
-import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.rsui.RSFrame
 import rs.helpkit.api.rsui.RSImage
 import rs.helpkit.api.rsui.RSLabel
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
 import rs.helpkit.util.io.Resources
-import java.awt.Color
-import java.awt.Graphics2D
+import java.awt.*
+import java.awt.geom.Area
 
 @Manifest(author = "Static", name = "Example Plugin", description = "Just an example", version = 1.0)
 class Example : Plugin(), Renderable {
@@ -59,11 +59,14 @@ class Example : Plugin(), Renderable {
         data = Players.local()?.name()?.text()
     }
 
+    val texture = Resources.img("/images/textures/btn-texture.png")
+
     override fun render(g: Graphics2D) {
+//        val img = Skills.ICONS[Skills.ATTACK.index()]
+//        g.drawImage(img, 100, 100, null)
 //        g.color = Color.GREEN
-//        val data = Fields["TestSuite#hook"]
 //        g.drawString("data: $data", 100, 100)
 //        frame.visible = false
-        frame.render(g)
+//        frame.render(g)
     }
 }

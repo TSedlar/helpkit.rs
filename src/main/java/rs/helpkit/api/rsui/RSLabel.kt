@@ -9,9 +9,9 @@ import java.awt.Graphics2D
  * @author Tyler Sedlar
  * @since 3/21/2018
  */
-class RSLabel(x: Int, y: Int) : FXChildComponent() {
+open class RSLabel(x: Int, y: Int) : FXChildComponent() {
 
-    private var text: Bind<String>? = null
+    protected var text: Bind<String>? = null
     var color: Color = Color.WHITE
     var font: Font = Font.decode(null) // default font
 

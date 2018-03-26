@@ -7,14 +7,13 @@ import rs.helpkit.api.game.access.GameTab
 import rs.helpkit.api.game.access.Interfaces
 import rs.helpkit.api.game.wrapper.RTComponent
 import rs.helpkit.api.raw.Fields
-import rs.helpkit.api.rsui.RSTabContentPanel
+import rs.helpkit.api.rsui.FXComponent
+import rs.helpkit.api.rsui.RSContainer
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
 import rs.helpkit.plugins.tab.*
 import rs.helpkit.util.io.Resources
-import java.awt.Color
-import java.awt.Graphics2D
-import java.awt.Rectangle
+import java.awt.*
 import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
 
@@ -35,7 +34,7 @@ class PluginTab : Plugin(), Renderable {
     var viewing: Boolean = false
 
     var customTab: CustomTab? = null
-    var customPanel: RSTabContentPanel? = null
+    var customPanel: RSContainer? = null
 
     val tabs = listOf(
             GrandExchangeTab(this),
@@ -62,8 +61,7 @@ class PluginTab : Plugin(), Renderable {
             if (actions != null && actions[GameMenu.itemCount - 1] == "Options") {
                 if (GameMenu.boundsAt(0).contains(e.point)) {
                     if (customTab != null) {
-                        customTab = null
-                        customPanel!!.visible = false
+                        customPanel!!.hide()
                     }
                     customTab = null
                     customPanel = null
@@ -84,6 +82,9 @@ class PluginTab : Plugin(), Renderable {
         val options = GameTab.OPTIONS.component()
         bounds = options?.bounds()
         viewing = GameTab.current() == GameTab.OPTIONS
+        if (customPanel != null && !viewing) {
+            customPanel!!.hide()
+        }
         val contents = findTabContentPanel()
         if (contents != null) {
             val arrIdx = contents.arrayIndex()
@@ -95,12 +96,16 @@ class PluginTab : Plugin(), Renderable {
     }
 
     override fun render(g: Graphics2D) {
-        g.color = Color.GREEN
         if (bounds != null && customTab != null) {
+            customTab!!.render(g)
             if (customPanel == null) {
                 customPanel = customTab!!.panel()
             }
-            customPanel!!.visible = viewing
+            if (viewing) {
+                customPanel!!.show()
+            } else {
+                customPanel!!.hide()
+            }
             if (viewing) {
                 g.drawImage(tabSelectedImage, bounds!!.x, bounds!!.y, null)
             } else {
@@ -117,5 +122,11 @@ class PluginTab : Plugin(), Renderable {
             }
             customPanel!!.render(g)
         }
+        contentBounds?.let { testAtRuntime(g, it) }
+    }
+
+    private fun testAtRuntime(g: Graphics2D, bounds: Rectangle) {
+//        val x = bounds.x + 59
+//        val y = bounds.y + 22
     }
 }

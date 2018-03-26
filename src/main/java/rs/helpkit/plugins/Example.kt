@@ -9,9 +9,7 @@ import rs.helpkit.api.game.access.Skills
 import rs.helpkit.api.game.access.Varpbits
 import rs.helpkit.api.game.listener.event.GEOfferUpdated
 import rs.helpkit.api.game.listener.event.VarpChanged
-import rs.helpkit.api.rsui.RSFrame
-import rs.helpkit.api.rsui.RSImage
-import rs.helpkit.api.rsui.RSLabel
+import rs.helpkit.api.rsui.*
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
 import rs.helpkit.util.io.Resources
@@ -27,11 +25,12 @@ class Example : Plugin(), Renderable {
     var counter: Int = 0
 
     init {
+        frame.hide()
         frame.x = 150
         frame.y = 150
         frame.add(RSImage("/images/ui/close-red.png", null, frame.w - 22, 2)
                 .onClick({ x, y ->
-                    frame.visible = false
+                    frame.hide()
                     println("$x, $y")
                 }))
         frame.add(RSLabel(0, 0)
@@ -66,7 +65,7 @@ class Example : Plugin(), Renderable {
 //        g.drawImage(img, 100, 100, null)
 //        g.color = Color.GREEN
 //        g.drawString("data: $data", 100, 100)
-//        frame.visible = false
+//        frame.hide()
 //        frame.render(g)
     }
 }

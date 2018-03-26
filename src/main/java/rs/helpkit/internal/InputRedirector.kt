@@ -3,7 +3,6 @@ package rs.helpkit.internal
 import rs.helpkit.OSRSContainer
 import rs.helpkit.api.game.access.Camera
 import rs.helpkit.api.game.access.GameMenu
-import rs.helpkit.api.rsui.FXChildComponent
 import rs.helpkit.api.rsui.FXComponent
 import java.awt.event.*
 import javax.swing.SwingUtilities
@@ -78,14 +77,9 @@ object InputRedirector {
 
     fun execFXMouseEvents(container: OSRSContainer, e: MouseEvent): Boolean {
         var block = false
-        FXComponent.VISIBLE_COMPONENTS.forEach { component ->
+        FXComponent.VISIBLE_WINDOWS.forEach { component ->
             var usable = true
-            if (component is FXChildComponent) {
-                if (!component.parent?.visible!!) {
-                    usable = false
-                }
-            }
-            if (!component.visible) {
+            if (!component.drawn() || (component.parent != null && !component.parent!!.drawn())) {
                 usable = false
             }
             if (usable) {

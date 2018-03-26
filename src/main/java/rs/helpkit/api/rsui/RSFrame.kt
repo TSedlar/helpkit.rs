@@ -12,6 +12,10 @@ class RSFrame(w: Int, h: Int) : RSWindow(w, h) {
     init {
         super.w = w
         super.h = h
+        onDrag({ _, _, absX, absY ->
+            x = absX - (w / 2)
+            y = absY - (h / 2)
+        })
     }
 
     companion object {

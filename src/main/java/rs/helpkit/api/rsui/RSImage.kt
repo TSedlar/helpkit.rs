@@ -8,12 +8,12 @@ import java.awt.image.BufferedImage
  * @author Tyler Sedlar
  * @since 3/21/2018
  */
-class RSImage(x: Int, y: Int) : FXChildComponent() {
+open class RSImage(x: Int, y: Int) : FXComponent() {
 
     var image: BufferedImage? = null
     var hoverImage: BufferedImage? = null
 
-    private var currentImage: BufferedImage? = null
+    protected var currentImage: BufferedImage? = null
 
     init {
         this.x = x

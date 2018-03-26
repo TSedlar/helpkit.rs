@@ -1,5 +1,6 @@
 package rs.helpkit.api.rsui
 
+import rs.helpkit.util.fx.GraphicsState
 import java.awt.Graphics2D
 
 /**
@@ -8,43 +9,32 @@ import java.awt.Graphics2D
  */
 abstract class RSWindow(w: Int, h: Int) : FXComponent() {
 
-    protected val children: MutableList<FXComponent> = ArrayList()
+    val children: MutableList<FXComponent> = ArrayList()
 
     init {
         this.w = w
         this.h = h
-        onDrag({ _, _, absX, absY ->
-            x = absX - (w / 2)
-            y = absY - (h / 2)
-        })
     }
 
     open fun add(child: FXComponent) {
-        if (child is FXChildComponent) {
-            child.parent = this
-        }
+        child.parent = this
         children.add(child)
     }
 
-    abstract fun render(g: Graphics2D, rx: Int, ry: Int)
-
     override fun render(g: Graphics2D) {
         if (visible) {
+            val state = GraphicsState(g)
             render(g, x + xOff, y + yOff)
-            children
-                    .filter { it is FXChildComponent }
-                    .map { it as FXChildComponent }
-                    .forEach { it.render(g, x + xOff, y + yOff) }
-            children
-                    .filter { it is RSContainer }
-                    .map { it as RSContainer }
-                    .forEach {
-                        it.x = it.parent.x
-                        it.y = it.parent.y
-                        it.xOff = it.parent.xOff
-                        it.yOff = it.parent.yOff
-                        it.render(g)
-                    }
+            state.restore()
+            children.forEach {
+                if (it is RSContainer) {
+                    it.x = x
+                    it.y = y
+                    it.xOff = xOff
+                    it.yOff = yOff
+                }
+                it.render(g)
+            }
         }
     }
 }

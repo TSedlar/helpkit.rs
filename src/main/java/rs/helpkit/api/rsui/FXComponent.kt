@@ -1,6 +1,8 @@
 package rs.helpkit.api.rsui
 
 import rs.helpkit.api.util.Renderable
+import rs.helpkit.util.fx.GraphicsState
+import java.awt.Graphics2D
 import java.awt.Rectangle
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -14,8 +16,10 @@ import java.util.concurrent.CopyOnWriteArrayList
  */
 abstract class FXComponent : Renderable {
 
+    var parent: RSWindow? = null
+
     companion object {
-        val VISIBLE_COMPONENTS: MutableList<FXComponent> = CopyOnWriteArrayList()
+        val VISIBLE_WINDOWS: MutableList<FXComponent> = CopyOnWriteArrayList()
     }
 
     var x: Int = 0
@@ -24,13 +28,13 @@ abstract class FXComponent : Renderable {
     var h: Int = 0
     var xOff: Int = 0
     var yOff: Int = 0
-    var visible: Boolean = false
+    protected var visible: Boolean = false
         set(visible) {
             field = visible
             if (visible) {
-                VISIBLE_COMPONENTS.add(this)
+                VISIBLE_WINDOWS.add(this)
             } else {
-                VISIBLE_COMPONENTS.remove(this)
+                VISIBLE_WINDOWS.remove(this)
             }
         }
 
@@ -52,15 +56,62 @@ abstract class FXComponent : Renderable {
             this.h = h
         }
 
-    fun bounds(): Rectangle {
+    fun drawn(): Boolean {
+        if (!visible) {
+            return false
+        }
+        return if (this.parent != null) {
+            var parent = this.parent
+            while (parent != null) {
+                if (!parent.visible) {
+                    return false
+                }
+                if (parent.parent != null) {
+                    parent = parent.parent
+                } else {
+                    break
+                }
+            }
+            parent!!.visible
+        } else {
+            visible
+        }
+    }
+
+    fun hide() {
+        visible = false
+    }
+
+    fun show() {
+        visible = true
+    }
+
+    open fun bounds(): Rectangle {
         return Rectangle(x + xOff, y + yOff, w, h)
     }
 
-    open fun exactBounds(): Rectangle = bounds()
+    open fun exactBounds(): Rectangle {
+        return if (parent == null) {
+            Rectangle(x, y, w, h)
+        } else {
+            Rectangle(parent!!.x + x + xOff, parent!!.y + y + yOff, w, h)
+        }
+    }
 
     fun onClick(callback: (x: Int, y: Int) -> Unit): FXComponent {
         mouseListeners.add(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
+                if (visible) {
+                    callback(e.x, e.y)
+                }
+            }
+        })
+        return this
+    }
+
+    fun onClickRelease(callback: (x: Int, y: Int) -> Unit): FXComponent {
+        mouseListeners.add(object : MouseAdapter() {
+            override fun mouseReleased(e: MouseEvent) {
                 if (visible) {
                     callback(e.x, e.y)
                 }
@@ -78,7 +129,7 @@ abstract class FXComponent : Renderable {
             }
         })
         onExit?.let {
-            mouseListeners.add(object: MouseAdapter() {
+            mouseListeners.add(object : MouseAdapter() {
                 override fun mouseExited(e: MouseEvent) {
                     if (visible) {
                         onExit()
@@ -109,5 +160,15 @@ abstract class FXComponent : Renderable {
             }
         })
         return this
+    }
+
+    abstract fun render(g: Graphics2D, rx: Int, ry: Int)
+
+    override fun render(g: Graphics2D) {
+        if (parent != null && visible) {
+            val state = GraphicsState(g)
+            render(g, parent!!.x + parent!!.xOff + xOff, parent!!.y + parent!!.yOff + yOff)
+            state.restore()
+        }
     }
 }

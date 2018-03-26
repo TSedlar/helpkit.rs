@@ -29,7 +29,7 @@ class Example : Plugin(), Renderable {
     init {
         frame.x = 150
         frame.y = 150
-        frame.add(RSImage("/images/ui/close-red.png", frame.w - 22, 2)
+        frame.add(RSImage("/images/ui/close-red.png", null, frame.w - 22, 2)
                 .onClick({ x, y ->
                     frame.visible = false
                     println("$x, $y")

@@ -11,20 +11,34 @@ import java.awt.image.BufferedImage
 class RSImage(x: Int, y: Int) : FXChildComponent() {
 
     var image: BufferedImage? = null
+    var hoverImage: BufferedImage? = null
+
+    private var currentImage: BufferedImage? = null
 
     init {
         this.x = x
         this.y = y
+        onHover({ _, _ ->
+            if (hoverImage != null) {
+                currentImage = hoverImage
+            }
+        }, {
+            currentImage = image
+        })
     }
 
-    constructor(image: BufferedImage, x: Int, y: Int) : this(x, y) {
+    constructor(image: BufferedImage, hoverImage: BufferedImage?, x: Int, y: Int) : this(x, y) {
         this.image = image
+        this.currentImage = image
+        this.hoverImage = hoverImage
         super.w = image.width
         super.h = image.height
     }
 
-    constructor(path: String, x: Int, y: Int) : this(x, y) {
+    constructor(path: String, hoverPath: String?, x: Int, y: Int) : this(x, y) {
         this.image = Resources.img(path)
+        this.currentImage = image
+        hoverPath?.let { this.hoverImage = Resources.img(it) }
         if (image != null) {
             super.w = image!!.width
             super.h = image!!.height
@@ -32,8 +46,8 @@ class RSImage(x: Int, y: Int) : FXChildComponent() {
     }
 
     override fun render(g: Graphics2D, rx: Int, ry: Int) {
-        if (image != null) {
-            g.drawImage(image, rx + x + xOff, ry + y + yOff, null)
+        if (currentImage != null) {
+            g.drawImage(currentImage, rx + x + xOff, ry + y + yOff, null)
         }
     }
 }

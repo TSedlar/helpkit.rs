@@ -32,9 +32,19 @@ abstract class RSWindow(w: Int, h: Int) : FXComponent() {
         if (visible) {
             render(g, x + xOff, y + yOff)
             children
-                    .filter { child -> child is FXChildComponent }
-                    .map { child -> child as FXChildComponent }
-                    .forEach { child -> child.render(g, x + xOff, y + yOff) }
+                    .filter { it is FXChildComponent }
+                    .map { it as FXChildComponent }
+                    .forEach { it.render(g, x + xOff, y + yOff) }
+            children
+                    .filter { it is RSContainer }
+                    .map { it as RSContainer }
+                    .forEach {
+                        it.x = it.parent.x
+                        it.y = it.parent.y
+                        it.xOff = it.parent.xOff
+                        it.yOff = it.parent.yOff
+                        it.render(g)
+                    }
         }
     }
 }

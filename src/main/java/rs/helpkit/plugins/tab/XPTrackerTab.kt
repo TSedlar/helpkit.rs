@@ -1,5 +1,6 @@
 package rs.helpkit.plugins.tab
 
+import rs.helpkit.api.game.access.Chatbox
 import rs.helpkit.api.game.access.Skills
 import rs.helpkit.api.rsui.*
 import rs.helpkit.api.util.Time
@@ -23,7 +24,9 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
         HOME, ADD
     }
 
-    private val trackers: MutableMap<Skills, FXComponent> = HashMap()
+    private val MAX_TRACKERS = 6
+
+    private val trackers: MutableMap<Skills, FXComponent> = ConcurrentHashMap()
     private val popouts: MutableMap<Skills, RSFrame> = ConcurrentHashMap()
     private val starts: MutableMap<Skills, Pair<Long, Int>> = ConcurrentHashMap()
 
@@ -36,7 +39,13 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
         home = RSContainer()
         home!!.add(RSButton(14, 223, 100, 25)
                 .bindTo { "Add Tracker" }
-                .onClick { _, _ -> container.page = Page.ADD })
+                .onClick { _, _ ->
+                    if (trackers.size == MAX_TRACKERS) {
+                        Chatbox.sendMessage("You can only have $MAX_TRACKERS trackers", Chatbox.COLOR_WARN)
+                    } else {
+                        container.page = Page.ADD
+                    }
+                })
         home!!.add(RSButton(120, 223, 25, 25)
                 .bindImage(RSUI.REFRESH_ALL)
                 .onClick { _, _ ->
@@ -53,6 +62,16 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
                         delete.background = Color(255, 0, 0, 130)
                     } else {
                         delete.background = RSButton.DEFAULT_BACKGROUND
+
+                        val skills: MutableList<Skills> = ArrayList()
+
+                        trackers.forEach { key, comp ->
+                            home!!.children.remove(comp)
+                            trackers.remove(key)
+                            skills.add(key)
+                        }
+
+                        skills.forEach { addTrackerPanel(it) }
                     }
                 })
         container.addPage(Page.HOME, home!!)
@@ -92,7 +111,8 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
 
         container.add(RSLabel(x + 127, y - 4)
                 .bindTo {
-                    if (skill.experience() - starts[skill]!!.second == 0 || lastHourlyNumber == 0) {
+                    if (skill !in starts || skill.experience() - starts[skill]!!.second == 0 ||
+                            lastHourlyNumber == 0) {
                         "Unknown TTL"
                     } else {
                         Skills.timeToLevel(skill.remainingToNext(), lastHourlyNumber)
@@ -136,7 +156,9 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
                                 popouts[skill] = createTrackerPopout(skill)
                             }
                         })
-                starts[skill] = Pair(Time.now(), skill.experience())
+                if (skill !in starts) {
+                    starts[skill] = Pair(Time.now(), skill.experience())
+                }
                 addTrackerUI(container, skill, 36, 14 + (32 * trackers.size))
                 it.add(container)
                 trackers[skill] = container

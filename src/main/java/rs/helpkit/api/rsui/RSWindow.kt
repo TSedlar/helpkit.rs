@@ -2,6 +2,7 @@ package rs.helpkit.api.rsui
 
 import rs.helpkit.util.fx.GraphicsState
 import java.awt.Graphics2D
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * @author Tyler Sedlar
@@ -9,7 +10,7 @@ import java.awt.Graphics2D
  */
 abstract class RSWindow(w: Int, h: Int) : FXComponent() {
 
-    val children: MutableList<FXComponent> = ArrayList()
+    val children: MutableList<FXComponent> = CopyOnWriteArrayList()
 
     init {
         this.w = w

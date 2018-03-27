@@ -82,6 +82,7 @@ abstract class FXComponent : Renderable {
 
     fun hide() {
         visible = false
+        VISIBLE_COMPONENTS.remove(this)
     }
 
     fun show() {

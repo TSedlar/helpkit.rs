@@ -71,6 +71,7 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
                         val skills: MutableList<Skills> = ArrayList()
 
                         trackers.forEach { key, comp ->
+                            comp.hide()
                             home!!.children.remove(comp)
                             trackers.remove(key)
                             skills.add(key)
@@ -143,6 +144,7 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
                 .onClick { _, _ ->
                     if (deleting) {
                         RSPreferences.setSkillEnabled(skill, false)
+                        trackers[skill]?.hide()
                         home!!.children.remove(trackers[skill])
                         trackers.remove(skill)
                         popouts.remove(skill)
@@ -174,7 +176,8 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
                                 RSPreferences.setSkillPopped(skill, true)
                                 popouts[skill] = createTrackerPopout(skill)
                             }
-                        })
+                        }
+                        .bindState { self -> self.selected = skill in popouts })
                 if (skill !in starts) {
                     starts[skill] = Pair(Time.now(), skill.experience())
                 }

@@ -4,8 +4,10 @@ class RSOctoCheck(x: Int, y: Int) : RSImage(RSUI.CHECK_OCTO, null, x, y) {
 
     var selected = false
         set(value) {
-            field = value
-            registerChange()
+            if (field != value) {
+                field = value
+                registerChange()
+            }
         }
 
     private var callback: ((Boolean) -> Unit)? = null

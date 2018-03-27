@@ -22,6 +22,8 @@ class RSPageContainer : RSContainer() {
         pages[condition] = target
     }
 
+    fun current(): FXComponent? = pages[page]
+
     override fun render(g: Graphics2D) {
         if (visible) {
             val state = GraphicsState(g)

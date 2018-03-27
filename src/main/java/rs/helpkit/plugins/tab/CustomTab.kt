@@ -12,8 +12,16 @@ abstract class CustomTab(private val container: PluginTab, val name: String, ico
 
     val icon = Resources.img(iconPath)
 
+    protected var panel: RSContainer? = null
+
     private val menuItem: CustomMenuItem = CustomMenuItem(name, {
+        container.customPanel?.hide()
         container.customTab = this
+        if (panel == null) {
+            panel = panel()
+        }
+        container.customPanel = panel
+        container.customPanel!!.show()
         GameTab.OPTIONS.component()?.toggleClickEvent()
     })
 

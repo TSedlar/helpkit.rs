@@ -15,16 +15,27 @@ open class RSImage(x: Int, y: Int) : FXComponent() {
 
     protected var currentImage: BufferedImage? = null
 
+    var disableHover = false
+
     init {
         this.x = x
         this.y = y
         onHover({ _, _ ->
-            if (hoverImage != null) {
-                currentImage = hoverImage
+            if (!disableHover) {
+                if (hoverImage != null) {
+                    currentImage = hoverImage
+                }
             }
         }, {
-            currentImage = image
+            if (!disableHover) {
+                currentImage = image
+            }
         })
+    }
+
+    fun disableHover(): RSImage {
+        disableHover = true
+        return this
     }
 
     constructor(image: BufferedImage, hoverImage: BufferedImage?, x: Int, y: Int) : this(x, y) {
@@ -46,7 +57,9 @@ open class RSImage(x: Int, y: Int) : FXComponent() {
     }
 
     override fun render(g: Graphics2D, rx: Int, ry: Int) {
-        if (currentImage != null) {
+        if (disableHover) {
+            g.drawImage(image, rx + x + xOff, ry + y + yOff, null)
+        } else if (currentImage != null) {
             g.drawImage(currentImage, rx + x + xOff, ry + y + yOff, null)
         }
     }

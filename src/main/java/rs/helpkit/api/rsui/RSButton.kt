@@ -3,15 +3,24 @@ package rs.helpkit.api.rsui
 import rs.helpkit.util.io.Resources
 import java.awt.*
 import java.awt.geom.Area
+import java.awt.image.BufferedImage
 
 class RSButton(x: Int, y: Int, w: Int, h: Int) : RSLabel(x, y) {
 
     companion object {
         val TEXTURE = Resources.img("/images/textures/btn-texture.png")
         val FONT = Resources.FONT_RS_BOLD_2
+        val DEFAULT_BACKGROUND = Color(0, 0, 0, 0)
+        val CLICKED_BACKGROUND = Color(131, 31, 29, 100)
     }
 
     private var currentColor: Color
+
+    private var image: BufferedImage? = null
+    private var imageX: Int = 0
+    private var imageY: Int = 0
+
+    var background: Color? = null
 
     init {
         this.w = w
@@ -24,6 +33,19 @@ class RSButton(x: Int, y: Int, w: Int, h: Int) : RSLabel(x, y) {
             currentColor = super.color
         })
     }
+
+    fun bindImage(img: BufferedImage, xOff: Int, yOff: Int): RSButton {
+        image = img
+        imageX = xOff
+        imageY = yOff
+        return this
+    }
+
+    fun bindImage(img: BufferedImage): RSButton = bindImage(img, 0, 0)
+
+    fun bindImage(path: String, xOff: Int, yOff: Int): RSButton = bindImage(Resources.img(path), xOff, yOff)
+
+    fun bindImage(path: String): RSButton = bindImage(path, 0, 0)
 
     override fun render(g: Graphics2D, rx: Int, ry: Int) {
         val x = rx + this.x + xOff
@@ -63,7 +85,16 @@ class RSButton(x: Int, y: Int, w: Int, h: Int) : RSLabel(x, y) {
         g.paint = null
         g.font = super.font
 
-        super.text?.value().let {
+        background?.let {
+            g.color = it
+            g.fill(area)
+        }
+
+        image?.let {
+            g.drawImage(it, x + (w / 2) - (it.width / 2) + imageX, y + (h / 2) - (it.height / 2) + imageY, null)
+        }
+
+        super.text?.value()?.let {
             val textX = (x + (w / 2) - (g.fontMetrics.stringWidth(it) / 2))
             val textY = (y + (h / 2) + (g.fontMetrics.getStringBounds(it, g).height.toInt() / 2.5).toInt())
             g.color = Color.BLACK

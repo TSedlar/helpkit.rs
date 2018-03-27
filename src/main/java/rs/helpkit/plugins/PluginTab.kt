@@ -7,13 +7,13 @@ import rs.helpkit.api.game.access.GameTab
 import rs.helpkit.api.game.access.Interfaces
 import rs.helpkit.api.game.wrapper.RTComponent
 import rs.helpkit.api.raw.Fields
-import rs.helpkit.api.rsui.FXComponent
 import rs.helpkit.api.rsui.RSContainer
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
 import rs.helpkit.plugins.tab.*
 import rs.helpkit.util.io.Resources
-import java.awt.*
+import java.awt.Graphics2D
+import java.awt.Rectangle
 import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
 
@@ -98,13 +98,12 @@ class PluginTab : Plugin(), Renderable {
     override fun render(g: Graphics2D) {
         if (bounds != null && customTab != null) {
             customTab!!.render(g)
-            if (customPanel == null) {
-                customPanel = customTab!!.panel()
-            }
-            if (viewing) {
-                customPanel!!.show()
-            } else {
-                customPanel!!.hide()
+            customPanel?.let {
+                if (viewing) {
+                    it.show()
+                } else {
+                    it.hide()
+                }
             }
             if (viewing) {
                 g.drawImage(tabSelectedImage, bounds!!.x, bounds!!.y, null)
@@ -114,13 +113,15 @@ class PluginTab : Plugin(), Renderable {
             val tabCenterX = bounds!!.x + (bounds!!.width / 2) - (customTab!!.icon.width / 2)
             val tabCenterY = bounds!!.y + (bounds!!.height / 2) - (customTab!!.icon.height / 2)
             g.drawImage(customTab!!.icon, tabCenterX, tabCenterY, null)
-            if (contentBounds != null) {
-                customPanel!!.x = contentBounds!!.x
-                customPanel!!.y = contentBounds!!.y
-                customPanel!!.width = contentBounds!!.width
-                customPanel!!.height = contentBounds!!.height
+            customPanel?.let {
+                if (contentBounds != null) {
+                    it.x = contentBounds!!.x
+                    it.y = contentBounds!!.y
+                    it.width = contentBounds!!.width
+                    it.height = contentBounds!!.height
+                }
+                it.render(g)
             }
-            customPanel!!.render(g)
         }
         contentBounds?.let { testAtRuntime(g, it) }
     }

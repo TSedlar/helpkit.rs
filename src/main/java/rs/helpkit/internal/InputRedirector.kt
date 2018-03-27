@@ -4,6 +4,7 @@ import rs.helpkit.OSRSContainer
 import rs.helpkit.api.game.access.Camera
 import rs.helpkit.api.game.access.GameMenu
 import rs.helpkit.api.rsui.FXComponent
+import rs.helpkit.api.util.Time
 import java.awt.event.*
 import javax.swing.SwingUtilities
 import javax.swing.event.MouseInputAdapter
@@ -75,8 +76,43 @@ object InputRedirector {
         }
     }
 
+    private var lastMenuOpen = -1L
+
     fun execFXMouseEvents(container: OSRSContainer, e: MouseEvent): Boolean {
         var block = false
+        when {
+            e.id == MouseEvent.MOUSE_CLICKED -> {
+                container.plugins.forEach { it.mouseClicked(e) }
+            }
+            e.id == MouseEvent.MOUSE_PRESSED -> {
+                container.plugins.forEach { it.mousePressed(e) }
+                if (e.button == MouseEvent.BUTTON1) {
+                    GameMenu.VALID_CUSTOM_MENU_ITEMS.values.forEach {
+                        if (GameMenu.visible()) {
+                            if (it.bounds?.contains(e.point)!!) {
+                                block = false
+                                it.handler()
+                            }
+                        }
+                    }
+                }
+            }
+            e.id == MouseEvent.MOUSE_RELEASED -> {
+                container.plugins.forEach { it.mouseReleased(e) }
+            }
+            e.id == MouseEvent.MOUSE_MOVED -> {
+                container.plugins.forEach { it.mouseMoved(e) }
+            }
+            e.id == MouseEvent.MOUSE_DRAGGED -> {
+                container.plugins.forEach { it.mouseDragged(e) }
+            }
+        }
+        if (GameMenu.visible()) {
+            lastMenuOpen = Time.now()
+            return false
+        } else if (lastMenuOpen != -1L && Time.now() - lastMenuOpen < 100) {
+            return false
+        }
         FXComponent.VISIBLE_WINDOWS.forEach { component ->
             var usable = true
             if (!component.drawn() || (component.parent != null && !component.parent!!.drawn())) {
@@ -111,36 +147,6 @@ object InputRedirector {
                     component.mouseListeners.forEach { it.mouseExited(e) }
                 }
             }
-        }
-        when {
-            e.id == MouseEvent.MOUSE_CLICKED -> {
-                container.plugins.forEach { it.mouseClicked(e) }
-            }
-            e.id == MouseEvent.MOUSE_PRESSED -> {
-                container.plugins.forEach { it.mousePressed(e) }
-                if (e.button == MouseEvent.BUTTON1) {
-                    GameMenu.VALID_CUSTOM_MENU_ITEMS.values.forEach {
-                        if (GameMenu.visible()) {
-                            if (it.bounds?.contains(e.point)!!) {
-                                block = false
-                                it.handler()
-                            }
-                        }
-                    }
-                }
-            }
-            e.id == MouseEvent.MOUSE_RELEASED -> {
-                container.plugins.forEach { it.mouseReleased(e) }
-            }
-            e.id == MouseEvent.MOUSE_MOVED -> {
-                container.plugins.forEach { it.mouseMoved(e) }
-            }
-            e.id == MouseEvent.MOUSE_DRAGGED -> {
-                container.plugins.forEach { it.mouseDragged(e) }
-            }
-        }
-        if (GameMenu.visible()) {
-            block = false
         }
         return block
     }

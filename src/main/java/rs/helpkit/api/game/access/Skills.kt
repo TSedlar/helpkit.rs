@@ -1,6 +1,7 @@
 package rs.helpkit.api.game.access
 
 import rs.helpkit.api.util.Stopwatch
+import rs.helpkit.api.util.Time
 import rs.helpkit.util.io.Resources
 
 enum class Skills private constructor(private val cooldown: Int) {
@@ -204,6 +205,10 @@ enum class Skills private constructor(private val cooldown: Int) {
 
         fun hourlyExperience(timer: Stopwatch, experienceGained: Int): Int {
             return if (timer.elapsed() > 0) (experienceGained * 3600000.0 / timer.elapsed()).toInt() else 0
+        }
+
+        fun timeToLevel(expToNext: Int, hourlyExp: Int): String {
+            return Time.format((expToNext.toDouble() * 3600000.0 / hourlyExp.toDouble()).toLong())
         }
 
         fun runescapeOrder(): Array<Skills> {

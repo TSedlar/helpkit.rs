@@ -28,7 +28,7 @@ abstract class FXComponent : Renderable {
     var h: Int = 0
     var xOff: Int = 0
     var yOff: Int = 0
-    protected var visible: Boolean = false
+    internal var visible: Boolean = false
         set(visible) {
             field = visible
             if (visible) {
@@ -40,6 +40,8 @@ abstract class FXComponent : Renderable {
 
     val mouseListeners: MutableList<MouseListener> = ArrayList()
     val mouseMotionListeners: MutableList<MouseMotionListener> = ArrayList()
+
+    internal val states: MutableList<(self: FXComponent) -> Unit> = ArrayList()
 
     init {
         visible = true
@@ -98,77 +100,84 @@ abstract class FXComponent : Renderable {
         }
     }
 
-    fun onClick(callback: (x: Int, y: Int) -> Unit): FXComponent {
-        mouseListeners.add(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent) {
-                if (visible) {
-                    callback(e.x, e.y)
-                }
-            }
-        })
-        return this
-    }
-
-    fun onClickRelease(callback: (x: Int, y: Int) -> Unit): FXComponent {
-        mouseListeners.add(object : MouseAdapter() {
-            override fun mouseReleased(e: MouseEvent) {
-                if (visible) {
-                    callback(e.x, e.y)
-                }
-            }
-        })
-        return this
-    }
-
-    fun onHover(onHover: (x: Int, y: Int) -> Unit, onExit: (() -> Unit)? = null): FXComponent {
-        mouseMotionListeners.add(object : MouseAdapter() {
-            override fun mouseMoved(e: MouseEvent) {
-                if (visible) {
-                    onHover(e.x, e.y)
-                }
-            }
-        })
-        onExit?.let {
-            mouseListeners.add(object : MouseAdapter() {
-                override fun mouseExited(e: MouseEvent) {
-                    if (visible) {
-                        onExit()
-                    }
-                }
-            })
-        }
-        return this
-    }
-
-    fun onDrag(callback: (x: Int, y: Int, absX: Int, absY: Int) -> Unit): FXComponent {
-        mouseMotionListeners.add(object : MouseAdapter() {
-            override fun mouseDragged(e: MouseEvent) {
-                if (visible) {
-                    callback(e.x, e.y, e.xOnScreen, e.yOnScreen)
-                }
-            }
-        })
-        return this
-    }
-
-    fun onDrag(callback: (x: Int, y: Int) -> Unit): FXComponent {
-        mouseMotionListeners.add(object : MouseAdapter() {
-            override fun mouseDragged(e: MouseEvent) {
-                if (visible) {
-                    callback(e.x, e.y)
-                }
-            }
-        })
-        return this
-    }
-
     abstract fun render(g: Graphics2D, rx: Int, ry: Int)
 
     override fun render(g: Graphics2D) {
+        states.forEach { it(this) }
         if (parent != null && visible) {
             val state = GraphicsState(g)
             render(g, parent!!.x + parent!!.xOff + xOff, parent!!.y + parent!!.yOff + yOff)
             state.restore()
         }
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T: FXComponent> T.bindState(state: (self: T) -> Unit): T {
+    states.add(state as (self: FXComponent) -> Unit)
+    return this
+}
+
+fun <T: FXComponent> T.onClick(callback: (x: Int, y: Int) -> Unit): T {
+    mouseListeners.add(object : MouseAdapter() {
+        override fun mouseClicked(e: MouseEvent) {
+            if (visible) {
+                callback(e.x, e.y)
+            }
+        }
+    })
+    return this
+}
+
+fun <T: FXComponent> T.onClickRelease(callback: (x: Int, y: Int) -> Unit): T {
+    mouseListeners.add(object : MouseAdapter() {
+        override fun mouseReleased(e: MouseEvent) {
+            if (visible) {
+                callback(e.x, e.y)
+            }
+        }
+    })
+    return this
+}
+
+fun <T: FXComponent> T.onHover(onHover: (x: Int, y: Int) -> Unit, onExit: (() -> Unit)? = null): T {
+    mouseMotionListeners.add(object : MouseAdapter() {
+        override fun mouseMoved(e: MouseEvent) {
+            if (visible) {
+                onHover(e.x, e.y)
+            }
+        }
+    })
+    onExit?.let {
+        mouseListeners.add(object : MouseAdapter() {
+            override fun mouseExited(e: MouseEvent) {
+                if (visible) {
+                    onExit()
+                }
+            }
+        })
+    }
+    return this
+}
+
+fun <T: FXComponent> T.onDrag(callback: (x: Int, y: Int, absX: Int, absY: Int) -> Unit): T {
+    mouseMotionListeners.add(object : MouseAdapter() {
+        override fun mouseDragged(e: MouseEvent) {
+            if (visible) {
+                callback(e.x, e.y, e.xOnScreen, e.yOnScreen)
+            }
+        }
+    })
+    return this
+}
+
+fun <T: FXComponent> T.onDrag(callback: (x: Int, y: Int) -> Unit): T {
+    mouseMotionListeners.add(object : MouseAdapter() {
+        override fun mouseDragged(e: MouseEvent) {
+            if (visible) {
+                callback(e.x, e.y)
+            }
+        }
+    })
+    return this
 }

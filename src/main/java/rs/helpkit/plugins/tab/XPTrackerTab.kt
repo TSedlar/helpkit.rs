@@ -186,7 +186,7 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
     }
 
     private fun createTrackerPopout(skill: Skills): RSFrame {
-        val frame = RSFrame(164, 49)
+        val frame = RSFrame(156, 39)
         frame.x = 150
         frame.y = 150
         val loc = RSPreferences.skillLocationFor(skill)
@@ -195,7 +195,7 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
             frame.y = loc.y
         }
         val container = RSContainer()
-        addTrackerUI(container, skill, 10, 18)
+        addTrackerUI(container, skill, 7, 12)
         frame.add(container)
         return frame
     }

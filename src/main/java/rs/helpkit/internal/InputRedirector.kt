@@ -78,6 +78,7 @@ object InputRedirector {
     }
 
     private var lastMenuOpen = -1L
+    private var lastPressTime = -1L
 
     fun execFXMouseEvents(container: OSRSContainer, e: MouseEvent): Boolean {
         if (!Client.loggedIn()) {
@@ -132,7 +133,10 @@ object InputRedirector {
                     component.mouseListeners.forEach { ml ->
                         when {
                             e.id == MouseEvent.MOUSE_CLICKED -> ml.mouseClicked(translated)
-                            e.id == MouseEvent.MOUSE_PRESSED -> ml.mousePressed(translated)
+                            e.id == MouseEvent.MOUSE_PRESSED -> {
+                                lastPressTime = Time.now()
+                                ml.mousePressed(translated)
+                            }
                             e.id == MouseEvent.MOUSE_RELEASED -> ml.mouseReleased(translated)
                         }
                     }
@@ -141,7 +145,9 @@ object InputRedirector {
                             e.id == MouseEvent.MOUSE_MOVED -> ml.mouseMoved(translated)
                             e.id == MouseEvent.MOUSE_DRAGGED -> {
                                 if (SwingUtilities.isLeftMouseButton(e)) {
-                                    ml.mouseDragged(translated)
+                                    if (Time.now() - lastPressTime > 1000) {
+                                        ml.mouseDragged(translated)
+                                    }
                                 }
                             }
                         }

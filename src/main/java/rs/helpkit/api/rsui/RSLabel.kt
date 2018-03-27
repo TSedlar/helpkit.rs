@@ -78,12 +78,14 @@ open class RSLabel(x: Int, y: Int) : FXComponent() {
         val str = text?.value()
         super.w = g.fontMetrics.getStringBounds(str, g).width.toInt()
         super.h = g.getFontMetrics(font).height
-        g.color = color
         g.font = font
         var xMod = 0
         if (alignment == "right") {
             xMod = -(g.fontMetrics.stringWidth(str))
         }
+        g.color = Color.BLACK
+        g.drawString(str, rx + x + xOff + 1 + xMod - 1, ry + y + yOff + h - 1 - 1)
+        g.color = color
         g.drawString(str, rx + x + xOff + 1 + xMod, ry + y + yOff + h - 1)
     }
 }

@@ -40,9 +40,9 @@ object Time {
      * @return The String of time formatted into days/hours/minutes/seconds.
      */
     fun format(millis: Long): String {
-        val hours = (millis / (1000 * 60 * 60) % 24).toInt()
-        val minutes = (millis / (1000 * 60) % 60).toInt()
-        val seconds = (millis / 1000).toInt() % 60
+        val hours = Math.abs((millis / (1000 * 60 * 60) % 24).toInt())
+        val minutes = Math.abs((millis / (1000 * 60) % 60).toInt())
+        val seconds = Math.abs((millis / 1000).toInt() % 60)
         return "%02d:%02d:%02d".format(hours, minutes, seconds)
     }
 }

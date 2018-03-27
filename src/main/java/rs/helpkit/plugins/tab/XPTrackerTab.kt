@@ -74,6 +74,9 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
                         if (lastHourly == 0L || Time.now() - lastHourly > 2500) {
                             val elapsed = (Time.now() - starts[skill]!!.first)
                             val gained = (skill.experience() - starts[skill]!!.second)
+                            if (gained > 0 && lastHourlyNumber == 0) {
+                                starts[skill] = Pair(Time.now(), skill.experience())
+                            }
                             lastHourly = Time.now()
                             lastHourlyNumber = Skills.hourlyExperience(elapsed, gained)
                             return@bindTo "$lastHourlyNumber/hr"

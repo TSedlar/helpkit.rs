@@ -7,6 +7,8 @@ import java.awt.Graphics2D
 class GrandExchangeTab(container: PluginTab) : CustomTab(
         container, "Grand Exchange", "/images/ge-tab.png"
 ) {
+    override fun startup() {
+    }
 
     override fun panel(): RSContainer {
         return RSContainer()

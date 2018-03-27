@@ -2,6 +2,7 @@ package rs.helpkit.internal
 
 import rs.helpkit.OSRSContainer
 import rs.helpkit.api.game.access.Camera
+import rs.helpkit.api.game.access.Client
 import rs.helpkit.api.game.access.GameMenu
 import rs.helpkit.api.rsui.FXComponent
 import rs.helpkit.api.util.Time
@@ -79,6 +80,9 @@ object InputRedirector {
     private var lastMenuOpen = -1L
 
     fun execFXMouseEvents(container: OSRSContainer, e: MouseEvent): Boolean {
+        if (!Client.loggedIn()) {
+            return false
+        }
         var block = false
         when {
             e.id == MouseEvent.MOUSE_CLICKED -> {
@@ -113,7 +117,7 @@ object InputRedirector {
         } else if (lastMenuOpen != -1L && Time.now() - lastMenuOpen < 100) {
             return false
         }
-        FXComponent.VISIBLE_WINDOWS.forEach { component ->
+        FXComponent.VISIBLE_COMPONENTS.forEach { component ->
             var usable = true
             if (!component.drawn() || (component.parent != null && !component.parent!!.drawn())) {
                 usable = false

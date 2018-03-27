@@ -19,7 +19,7 @@ abstract class FXComponent : Renderable {
     var parent: RSWindow? = null
 
     companion object {
-        val VISIBLE_WINDOWS: MutableList<FXComponent> = CopyOnWriteArrayList()
+        val VISIBLE_COMPONENTS: MutableList<FXComponent> = CopyOnWriteArrayList()
     }
 
     var x: Int = 0
@@ -32,9 +32,9 @@ abstract class FXComponent : Renderable {
         set(visible) {
             field = visible
             if (visible) {
-                VISIBLE_WINDOWS.add(this)
+                VISIBLE_COMPONENTS.add(this)
             } else {
-                VISIBLE_WINDOWS.remove(this)
+                VISIBLE_COMPONENTS.remove(this)
             }
         }
 
@@ -100,10 +100,13 @@ abstract class FXComponent : Renderable {
         }
     }
 
+    fun processStates() {
+        states.forEach { it(this) }
+    }
+
     abstract fun render(g: Graphics2D, rx: Int, ry: Int)
 
     override fun render(g: Graphics2D) {
-        states.forEach { it(this) }
         if (parent != null && visible) {
             val state = GraphicsState(g)
             render(g, parent!!.x + parent!!.xOff + xOff, parent!!.y + parent!!.yOff + yOff)

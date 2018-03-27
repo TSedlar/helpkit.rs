@@ -8,6 +8,9 @@ class HiscoresTab(container: PluginTab) : CustomTab(
         container, "Hiscores", "/images/hiscores-tab.png"
 ) {
 
+    override fun startup() {
+    }
+
     override fun panel(): RSContainer {
         return RSContainer()
     }

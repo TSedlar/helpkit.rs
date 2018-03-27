@@ -3,11 +3,13 @@ package rs.helpkit.plugins
 import com.google.common.eventbus.Subscribe
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
+import rs.helpkit.api.game.access.Client
 import rs.helpkit.api.game.access.GrandExchange
 import rs.helpkit.api.game.access.Players
 import rs.helpkit.api.game.access.Varpbits
 import rs.helpkit.api.game.listener.event.GEOfferUpdated
 import rs.helpkit.api.game.listener.event.VarpChanged
+import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.rsui.RSFrame
 import rs.helpkit.api.rsui.RSImage
 import rs.helpkit.api.rsui.RSLabel
@@ -15,29 +17,13 @@ import rs.helpkit.api.rsui.onClick
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
 import rs.helpkit.util.io.Resources
+import java.awt.Color
 import java.awt.Graphics2D
 
 @Manifest(author = "Static", name = "Example Plugin", description = "Just an example", version = 1.0)
 class Example : Plugin(), Renderable {
 
     var data: Any? = null
-    var frame: RSFrame = RSFrame(164, 49)
-
-    var counter: Int = 0
-
-    init {
-        frame.hide()
-        frame.x = 150
-        frame.y = 150
-        frame.add(RSImage("/images/ui/close-red.png", null, frame.w - 22, 2)
-                .onClick({ x, y ->
-                    frame.hide()
-                    println("$x, $y")
-                }))
-        frame.add(RSLabel(0, 0)
-                .useFont(Resources.FONT_RS_SMALL, 16)
-                .bindTo { (counter++).toString() })
-    }
 
     override fun validate(): Boolean {
         return true
@@ -62,11 +48,7 @@ class Example : Plugin(), Renderable {
     val texture = Resources.img("/images/textures/btn-texture.png")
 
     override fun render(g: Graphics2D) {
-//        val img = Skills.ICONS[Skills.ATTACK.index()]
-//        g.drawImage(img, 100, 100, null)
-//        g.color = Color.GREEN
+        g.color = Color.GREEN
 //        g.drawString("data: $data", 100, 100)
-//        frame.hide()
-//        frame.render(g)
     }
 }

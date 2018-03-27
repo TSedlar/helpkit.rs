@@ -73,8 +73,8 @@ class PluginTab : Plugin(), Renderable {
     }
 
     @Schedule(100)
-    fun updateCustomMenuItems() {
-        CustomTab.updateMenuItems(tabs)
+    fun processTabs() {
+        CustomTab.process(tabs)
     }
 
     @Schedule(100)
@@ -96,8 +96,8 @@ class PluginTab : Plugin(), Renderable {
     }
 
     override fun render(g: Graphics2D) {
+        tabs.forEach { it.render(g) }
         if (bounds != null && customTab != null) {
-            customTab!!.render(g)
             customPanel?.let {
                 if (viewing) {
                     it.show()

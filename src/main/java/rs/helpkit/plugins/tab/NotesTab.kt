@@ -8,6 +8,9 @@ class NotesTab(container: PluginTab) : CustomTab(
         container, "Notes", "/images/notes-tab.png"
 ) {
 
+    override fun startup() {
+    }
+
     override fun panel(): RSContainer {
         return RSContainer()
     }

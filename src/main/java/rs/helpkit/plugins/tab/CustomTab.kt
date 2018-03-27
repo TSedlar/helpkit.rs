@@ -12,23 +12,29 @@ abstract class CustomTab(private val container: PluginTab, val name: String, ico
 
     val icon = Resources.img(iconPath)
 
-    protected var panel: RSContainer? = null
+    private var panel: RSContainer? = null
 
     private val menuItem: CustomMenuItem = CustomMenuItem(name, {
         container.customPanel?.hide()
         container.customTab = this
-        if (panel == null) {
-            panel = panel()
-        }
         container.customPanel = panel
         container.customPanel!!.show()
         GameTab.OPTIONS.component()?.toggleClickEvent()
     })
 
+    abstract fun startup()
     abstract fun panel(): RSContainer
 
+    private fun run() {
+        if (panel == null) {
+            panel = panel()
+            startup()
+        }
+    }
+
     companion object {
-        fun updateMenuItems(items: List<CustomTab>) {
+        fun process(items: List<CustomTab>) {
+            items.forEach { it.run() }
             GameMenu.addMenuItems({ actions, _ ->
                 actions[GameMenu.itemCount - 1] == "Options"
             }, 1, *items.map { it.menuItem }.toTypedArray())

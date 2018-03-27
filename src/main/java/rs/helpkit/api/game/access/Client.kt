@@ -15,6 +15,12 @@ object Client {
     val FRAME_RESIZABLE = 161
     val FRAME_RESIZABLE_WITH_PANELS = 164
 
+    val STATE_CREDENTIALS = 10
+    val STATE_PLAYING = 25
+    val STATE_IN_GAME = 30
+
+    val COMP_ACCOUNT_INFO = 378
+
     fun mouse(): Point {
         return Point(Fields.asInt("Client#mouseX"), Fields.asInt("Client#mouseY"))
     }
@@ -50,4 +56,17 @@ object Client {
     fun baseLevels(): IntArray? = Fields.asIntArray("Client#baseSkillLevels")
 
     fun experiences(): IntArray? = Fields.asIntArray("Client#skillExperiences")
+
+    fun connectionState(): Int = Fields.asInt("Client#connectionState")
+
+    fun loggedIn(): Boolean {
+        val hud = hudIndex()
+        if (hudIndex() != -1) {
+            Fields["Client#loadedInterfaces"]?.let {
+                val array = it as BooleanArray
+                return connectionState() >= STATE_PLAYING && array[hud] && !array[COMP_ACCOUNT_INFO]
+            }
+        }
+        return false
+    }
 }

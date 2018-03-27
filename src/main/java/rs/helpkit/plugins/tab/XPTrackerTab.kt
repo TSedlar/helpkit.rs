@@ -1,10 +1,12 @@
 package rs.helpkit.plugins.tab
 
 import rs.helpkit.api.game.access.Chatbox
+import rs.helpkit.api.game.access.Client
 import rs.helpkit.api.game.access.Skills
 import rs.helpkit.api.rsui.*
 import rs.helpkit.api.util.Time
 import rs.helpkit.plugins.PluginTab
+import rs.helpkit.pref.RSPreferences
 import rs.helpkit.util.fx.Images
 import rs.helpkit.util.io.Resources
 import java.awt.Color
@@ -34,6 +36,9 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
     private var data: RSContainer? = null
 
     private var deleting = false
+
+    override fun startup() {
+    }
 
     private fun addHomePanel(container: RSPageContainer) {
         home = RSContainer()
@@ -86,24 +91,32 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
 
         var lastHourly = 0L
         var lastHourlyNumber = 0
+        var startedTraining = false
 
         container.add(RSLabel(x + 22, y - 4)
                 .bindTo {
                     if (skill in starts) {
-                        if (lastHourly == 0L || Time.now() - lastHourly > 2500) {
-                            val elapsed = (Time.now() - starts[skill]!!.first)
-                            val gained = (skill.experience() - starts[skill]!!.second)
-                            if (gained > 0 && lastHourlyNumber == 0) {
-                                starts[skill] = Pair(Time.now(), skill.experience())
-                            }
+                        val elapsed = (Time.now() - starts[skill]!!.first)
+                        val gained = (skill.experience() - starts[skill]!!.second)
+                        if (gained > 0 && !startedTraining) {
+                            starts[skill] = Pair(Time.now(), skill.experience())
+                            startedTraining = true
+                        }
+                        if (lastHourly == 0L || Time.now() - lastHourly >= 2500) {
                             lastHourly = Time.now()
                             lastHourlyNumber = Skills.hourlyExperience(elapsed, gained)
-                            return@bindTo "$lastHourlyNumber/hr"
-                        } else {
-                            return@bindTo "$lastHourlyNumber/hr"
                         }
+                        return@bindTo "$lastHourlyNumber/hr"
                     } else {
                         return@bindTo "0/hr"
+                    }
+                }
+                .bindState {
+                    if (!Client.loggedIn()) {
+                        starts.remove(skill)
+                        startedTraining = false
+                    } else if (skill !in starts) {
+                        starts[skill] = Pair(Time.now(), skill.experience())
                     }
                 }
                 .useFont(Resources.FONT_RS_SMALL, 16)
@@ -111,8 +124,7 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
 
         container.add(RSLabel(x + 127, y - 4)
                 .bindTo {
-                    if (skill !in starts || skill.experience() - starts[skill]!!.second == 0 ||
-                            lastHourlyNumber == 0) {
+                    if (skill !in starts || skill.experience() - starts[skill]!!.second == 0) {
                         "Unknown TTL"
                     } else {
                         Skills.timeToLevel(skill.remainingToNext(), lastHourlyNumber)
@@ -130,6 +142,7 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
         container.add(RSImage(RSUI.REFRESH_ONE, null, x + 130, y - 3)
                 .onClick { _, _ ->
                     if (deleting) {
+                        RSPreferences.setSkillEnabled(skill, false)
                         home!!.children.remove(trackers[skill])
                         trackers.remove(skill)
                         popouts.remove(skill)
@@ -145,14 +158,20 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
     }
 
     private fun addTrackerPanel(skill: Skills) {
+        if (trackers.size == MAX_TRACKERS) {
+            return
+        }
+        RSPreferences.setSkillEnabled(skill, true)
         home?.let {
             if (skill !in trackers) {
                 val container = RSContainer()
                 container.add(RSOctoCheck(10, 12 + (32 * trackers.size))
                         .onValueChange {
                             if (!it) {
+                                RSPreferences.setSkillPopped(skill, false)
                                 popouts.remove(skill)
                             } else {
+                                RSPreferences.setSkillPopped(skill, true)
                                 popouts[skill] = createTrackerPopout(skill)
                             }
                         })
@@ -170,6 +189,11 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
         val frame = RSFrame(164, 49)
         frame.x = 150
         frame.y = 150
+        val loc = RSPreferences.skillLocationFor(skill)
+        if (loc.x != -1 && loc.y != -1) {
+            frame.x = loc.x
+            frame.y = loc.y
+        }
         val container = RSContainer()
         addTrackerUI(container, skill, 10, 18)
         frame.add(container)
@@ -207,11 +231,24 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
         addHomePanel(container)
         addDataPanel(container)
 
+        Skills.values().forEach {
+            if (RSPreferences.isSkillEnabled(it)) {
+                addTrackerPanel(it)
+                if (RSPreferences.isSkillPopout(it)) {
+                    popouts[it] = createTrackerPopout(it)
+                }
+            }
+        }
+
         container.page = Page.HOME
         return container
     }
 
     override fun render(g: Graphics2D) {
-        popouts.values.forEach { it.render(g) }
+        popouts.forEach { skill, frame ->
+            frame.render(g)
+            val bounds = frame.exactBounds()
+            RSPreferences.setSkillLocation(skill, bounds.x, bounds.y)
+        }
     }
 }

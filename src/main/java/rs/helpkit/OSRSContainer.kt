@@ -5,8 +5,10 @@ import org.reflections.Reflections
 import org.reflections.scanners.SubTypesScanner
 import org.slf4j.LoggerFactory
 import rs.helpkit.api.Plugin
+import rs.helpkit.api.game.access.Client
 import rs.helpkit.api.game.access.GameMenu
 import rs.helpkit.api.manifest
+import rs.helpkit.api.rsui.FXComponent
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Time
 import rs.helpkit.dev.services.HookReloaderService
@@ -120,9 +122,12 @@ class OSRSContainer(applet: Applet) {
                 outside.subtract(Area(bounds))
                 g.clip(outside)
             }
-            plugins.stream()
-                    .filter { p -> p.enabled && p.validate() && p is Renderable }
-                    .forEach { p -> (p as Renderable).render(g) }
+            FXComponent.VISIBLE_COMPONENTS.forEach { it.processStates() }
+            if (Client.loggedIn()) {
+                plugins.stream()
+                        .filter { p -> p.enabled && p.validate() && p is Renderable }
+                        .forEach { p -> (p as Renderable).render(g) }
+            }
         })
     }
 

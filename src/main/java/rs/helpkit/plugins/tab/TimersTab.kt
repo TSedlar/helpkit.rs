@@ -8,6 +8,9 @@ class TimersTab(container: PluginTab) : CustomTab(
         container, "Timers", "/images/timers-tab.png"
 ) {
 
+    override fun startup() {
+    }
+
     override fun panel(): RSContainer {
         return RSContainer()
     }

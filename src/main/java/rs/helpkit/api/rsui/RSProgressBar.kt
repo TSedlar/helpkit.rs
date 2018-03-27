@@ -3,7 +3,7 @@ package rs.helpkit.api.rsui
 import java.awt.Color
 import java.awt.Graphics2D
 
-class RSProgressBar(x: Int, y: Int, w: Int, h: Int, private var progress: () -> Int): FXComponent() {
+class RSProgressBar(x: Int, y: Int, w: Int, h: Int, private var progress: () -> Int) : FXComponent() {
 
     init {
         this.x = x

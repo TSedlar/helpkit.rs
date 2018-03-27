@@ -113,12 +113,12 @@ abstract class FXComponent : Renderable {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T: FXComponent> T.bindState(state: (self: T) -> Unit): T {
+fun <T : FXComponent> T.bindState(state: (self: T) -> Unit): T {
     states.add(state as (self: FXComponent) -> Unit)
     return this
 }
 
-fun <T: FXComponent> T.onClick(callback: (x: Int, y: Int) -> Unit): T {
+fun <T : FXComponent> T.onClick(callback: (x: Int, y: Int) -> Unit): T {
     mouseListeners.add(object : MouseAdapter() {
         override fun mouseClicked(e: MouseEvent) {
             if (visible) {
@@ -129,7 +129,7 @@ fun <T: FXComponent> T.onClick(callback: (x: Int, y: Int) -> Unit): T {
     return this
 }
 
-fun <T: FXComponent> T.onClickRelease(callback: (x: Int, y: Int) -> Unit): T {
+fun <T : FXComponent> T.onClickRelease(callback: (x: Int, y: Int) -> Unit): T {
     mouseListeners.add(object : MouseAdapter() {
         override fun mouseReleased(e: MouseEvent) {
             if (visible) {
@@ -140,7 +140,7 @@ fun <T: FXComponent> T.onClickRelease(callback: (x: Int, y: Int) -> Unit): T {
     return this
 }
 
-fun <T: FXComponent> T.onHover(onHover: (x: Int, y: Int) -> Unit, onExit: (() -> Unit)? = null): T {
+fun <T : FXComponent> T.onHover(onHover: (x: Int, y: Int) -> Unit, onExit: (() -> Unit)? = null): T {
     mouseMotionListeners.add(object : MouseAdapter() {
         override fun mouseMoved(e: MouseEvent) {
             if (visible) {
@@ -160,7 +160,7 @@ fun <T: FXComponent> T.onHover(onHover: (x: Int, y: Int) -> Unit, onExit: (() ->
     return this
 }
 
-fun <T: FXComponent> T.onDrag(callback: (x: Int, y: Int, absX: Int, absY: Int) -> Unit): T {
+fun <T : FXComponent> T.onDrag(callback: (x: Int, y: Int, absX: Int, absY: Int) -> Unit): T {
     mouseMotionListeners.add(object : MouseAdapter() {
         override fun mouseDragged(e: MouseEvent) {
             if (visible) {
@@ -171,7 +171,7 @@ fun <T: FXComponent> T.onDrag(callback: (x: Int, y: Int, absX: Int, absY: Int) -
     return this
 }
 
-fun <T: FXComponent> T.onDrag(callback: (x: Int, y: Int) -> Unit): T {
+fun <T : FXComponent> T.onDrag(callback: (x: Int, y: Int) -> Unit): T {
     mouseMotionListeners.add(object : MouseAdapter() {
         override fun mouseDragged(e: MouseEvent) {
             if (visible) {

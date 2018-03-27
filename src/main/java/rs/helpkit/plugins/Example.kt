@@ -5,16 +5,17 @@ import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
 import rs.helpkit.api.game.access.GrandExchange
 import rs.helpkit.api.game.access.Players
-import rs.helpkit.api.game.access.Skills
 import rs.helpkit.api.game.access.Varpbits
 import rs.helpkit.api.game.listener.event.GEOfferUpdated
 import rs.helpkit.api.game.listener.event.VarpChanged
-import rs.helpkit.api.rsui.*
+import rs.helpkit.api.rsui.RSFrame
+import rs.helpkit.api.rsui.RSImage
+import rs.helpkit.api.rsui.RSLabel
+import rs.helpkit.api.rsui.onClick
 import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
 import rs.helpkit.util.io.Resources
-import java.awt.*
-import java.awt.geom.Area
+import java.awt.Graphics2D
 
 @Manifest(author = "Static", name = "Example Plugin", description = "Just an example", version = 1.0)
 class Example : Plugin(), Renderable {

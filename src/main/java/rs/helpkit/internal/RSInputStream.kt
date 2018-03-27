@@ -2,7 +2,6 @@ package rs.helpkit.internal
 
 import rs.helpkit.api.game.access.Camera
 import rs.helpkit.api.game.access.Client
-import rs.helpkit.api.raw.Fields
 import java.io.FilterInputStream
 import java.io.InputStream
 

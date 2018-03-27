@@ -188,12 +188,5 @@ class XPTrackerTab(var container: PluginTab) : CustomTab(
 
     override fun render(g: Graphics2D) {
         popouts.values.forEach { it.render(g) }
-        if (deleting && panel != null && panel!!.drawn()) {
-//            g.color = Color(255, 0, 0, 100)
-//            var idx = 0
-//            trackers.forEach { _, _ ->
-//                g.fillRect(panel!!.x + 8, panel!!.y + 8 + (32 * idx++), panel!!.w - 15, 28)
-//            }
-        }
     }
 }

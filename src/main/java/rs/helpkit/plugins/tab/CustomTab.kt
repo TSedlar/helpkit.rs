@@ -19,7 +19,9 @@ abstract class CustomTab(private val container: PluginTab, val name: String, ico
         container.customTab = this
         container.customPanel = panel
         container.customPanel!!.show()
-        GameTab.OPTIONS.component()?.toggleClickEvent()
+        if (GameTab.current() != GameTab.OPTIONS) {
+            GameTab.OPTIONS.component()?.toggleClickEvent()
+        }
     })
 
     abstract fun startup()

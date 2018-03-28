@@ -70,6 +70,7 @@ class PluginTab : Plugin(), Renderable {
                     }
                     customTab = null
                     customPanel = null
+                    val current = GameTab.current()
                     GameTab.OPTIONS.component()?.toggleClickEvent()
                     Fields.set("GameMenu#visible", false, null)
                 }

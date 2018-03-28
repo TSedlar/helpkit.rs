@@ -14,7 +14,11 @@ class ActionSwapper : Plugin(), Renderable {
     }
 
     override fun onAwtCycle() {
-        GameMenu.sort("Exchange", "Talk-to")
+        GameMenu.sort(
+                "Break", "Toggle Destination", "Eat", "Drink", "Wear", "Wield", "Rub", "Lay", "Set-up",
+                "Fill", "Empty", "Check", "Deposit", "Settings", "Teleport", "Features", "Disassemble",
+                "Gem Mine", "Commune", "Use", "Bury", "Pickpocket", "Attack", "Exchange", "Talk-to"
+        )
     }
 
     override fun render(g: Graphics2D) {

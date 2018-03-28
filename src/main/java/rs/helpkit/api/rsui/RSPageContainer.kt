@@ -14,7 +14,7 @@ class RSPageContainer : RSContainer() {
     private val pages: MutableMap<Any, FXComponent> = HashMap()
 
     override fun add(child: FXComponent) {
-        error("#addPage should be used instead, as this is a stateful type of container.")
+        error("#addPage should be used instead, as this is a stateful opcode of container.")
     }
 
     fun addPage(condition: Any, target: FXComponent) {

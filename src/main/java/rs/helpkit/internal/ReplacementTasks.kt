@@ -1,5 +1,6 @@
 package rs.helpkit.internal
 
+import rs.helpkit.OSRSContainer
 import rs.helpkit.api.game.access.Client
 import rs.helpkit.api.raw.Fields
 import rs.helpkit.api.util.Time
@@ -41,7 +42,7 @@ object ReplacementTasks {
 
     object Streams {
 
-        fun startReplacementTask() {
+        fun startReplacementTask(container: OSRSContainer) {
             Thread({
                 while (true) {
                     try {
@@ -53,13 +54,13 @@ object ReplacementTasks {
                                 val input = socket.input()
                                 if (input != null) {
                                     if (input !is RSInputStream) {
-                                        Fields.set("RSSocket#input", RSInputStream(input), socket.get())
+                                        Fields.set("RSSocket#input", RSInputStream(container, input), socket.get())
                                     }
                                 }
                                 val output = socket.output()
                                 if (output != null) {
                                     if (output !is RSOutputStream) {
-                                        Fields.set("RSSocket#output", RSOutputStream(output), socket.get())
+                                        Fields.set("RSSocket#output", RSOutputStream(container, output), socket.get())
                                     }
                                 }
                             }
@@ -75,7 +76,7 @@ object ReplacementTasks {
 
     object Proxies {
 
-        fun startReplacementTask() {
+        fun startPacketReplacement() {
             Thread({
                 var set = false
                 while (!set) {
@@ -84,9 +85,25 @@ object ReplacementTasks {
                         val buffer = ctx.buffer()
                         if (buffer != null) {
                             val field = HookLoader.DIRECT_FIELDS["PacketContext#buffer"]!!
-                            set = ObjectProxy.override(field, arrayOf(Int::class.java), arrayOf(5000), ctx.get())
+                            set = ObjectProxy.override(field, arrayOf(Int::class.java), arrayOf(5000), ctx.get(),
+                                    { method, args ->
+
+                                    })
                             println("override PacketContext#buffer @ $buffer")
                         }
+                    }
+                    Time.sleep(50)
+                }
+            }).start()
+        }
+
+        fun startCSEventQueueReplacement(container: OSRSContainer) {
+            Thread({
+                var set = false
+                while (!set) {
+                    val queue = Fields["Client#csPriority0Queue"]
+                    if (queue != null) {
+                        set = CSEventQueue.proxy(container, queue)
                     }
                     Time.sleep(50)
                 }

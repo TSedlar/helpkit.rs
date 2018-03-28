@@ -7,6 +7,7 @@ import rs.helpkit.util.io.TSVListing
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles
 import java.lang.reflect.Field
+import java.lang.reflect.Method
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -25,6 +26,7 @@ object HookLoader {
     val METHODS: MutableMap<String, MethodHandle> = ConcurrentHashMap()
 
     val DIRECT_FIELDS: MutableMap<String, Field> = ConcurrentHashMap()
+    val DIRECT_METHODS: MutableMap<String, Method> = ConcurrentHashMap()
 
     val MULTIPLIERS: MutableMap<String, Number> = ConcurrentHashMap()
     val OPAQUES: MutableMap<String, Opaque> = ConcurrentHashMap()
@@ -124,6 +126,7 @@ object HookLoader {
                         return@findMethod str == methodKey
                     })
                     if (method != null) {
+                        DIRECT_METHODS.put(key, method)
                         if (hasOpaque) {
                             OPAQUES[line[1]]?.type = matchedOpaqueType!!
                             OPAQUES[key] = OPAQUES[line[1]]!!

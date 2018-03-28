@@ -161,7 +161,7 @@ object Fields {
     }
 
     @JvmOverloads
-    fun asStringArray(name: String, parent: Any? = null): Array<String>? {
+    fun asStringArray(name: String, parent: Any? = null): Array<String?>? {
         return asArray(name, parent)?.map { item -> item.toString() }?.toTypedArray()
     }
 }

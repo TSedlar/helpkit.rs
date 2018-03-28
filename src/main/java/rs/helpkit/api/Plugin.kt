@@ -51,6 +51,13 @@ abstract class Plugin : Thread(), MouseInputListener {
         }
     }
 
+    open fun onCycle() {
+    }
+
+    open fun onAwtCycle() {
+
+    }
+
     override fun mouseReleased(e: MouseEvent) {
     }
 

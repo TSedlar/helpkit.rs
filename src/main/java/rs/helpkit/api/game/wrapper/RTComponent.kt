@@ -16,7 +16,7 @@ class RTComponent(referent: Any?, var index: Int) : Wrapper("RTComponent", refer
 
     fun tooltip(): String? = asString("buttonAction")
 
-    fun actions(): Array<String>? = asStringArray("actions")
+    fun actions(): Array<String?>? = asStringArray("actions")
 
     fun uid(): Int = rawId().ushr(16)
 

@@ -5,19 +5,26 @@ import javassist.util.proxy.ProxyFactory
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @author Tyler Sedlar
  * @since 3/25/2018
  */
+
+typealias MethodCallback = (method: Method, args: Array<*>) -> Unit
+
 object ObjectProxy {
 
+    private val callbacks: MutableList<MethodCallback> = ArrayList()
+
     fun callback(method: Method, args: Array<*>) {
-        val tgs = method.toGenericString()
-//        println("proxying: $tgs")
+        callbacks.forEach { it(method, args) }
     }
 
-    fun override(field: Field, initParameterTypes: Array<Class<*>>, initArgs: Array<Any>, parent: Any?): Boolean {
+    fun override(field: Field, initParameterTypes: Array<Class<*>>, initArgs: Array<Any>, parent: Any?,
+                 callback: MethodCallback): Boolean {
         val target = field.get(parent)
 
         val instance = try {
@@ -50,5 +57,7 @@ object ObjectProxy {
         }
     }
 
-    fun override(field: Field, parent: Any?): Boolean = override(field, arrayOf(), arrayOf(), parent)
+    fun override(field: Field, parent: Any?, callback: MethodCallback): Boolean {
+        return override(field, arrayOf(), arrayOf(), parent, callback)
+    }
 }

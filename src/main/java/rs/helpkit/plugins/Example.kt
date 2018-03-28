@@ -37,15 +37,14 @@ class Example : Plugin(), Renderable {
 
     @Subscribe
     fun onVarbitChanged(event: VarpChanged) {
-        println("Varbit@${event.index} = ${Varpbits.get()[event.index]}")
+//        println("Varbit@${event.index} = ${Varpbits.get()[event.index]}")
     }
 
     @Schedule(100)
     fun updateData() {
-        data = Players.local()?.name()?.text()
+//        data = Players.local()?.name()?.text()
+//        data = Fields["TestSuite#hook"]
     }
-
-    val texture = Resources.img("/images/textures/btn-texture.png")
 
     override fun render(g: Graphics2D) {
         g.color = Color.GREEN

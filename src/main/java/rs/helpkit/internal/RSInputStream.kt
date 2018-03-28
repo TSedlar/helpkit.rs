@@ -1,7 +1,9 @@
 package rs.helpkit.internal
 
+import rs.helpkit.OSRSContainer
 import rs.helpkit.api.game.access.Camera
 import rs.helpkit.api.game.access.Client
+import rs.helpkit.api.game.access.GameMenu
 import java.io.FilterInputStream
 import java.io.InputStream
 
@@ -9,7 +11,7 @@ import java.io.InputStream
  * @author Tyler Sedlar
  * @since 3/24/2018
  */
-class RSInputStream(original: InputStream) : FilterInputStream(original) {
+class RSInputStream(var container: OSRSContainer, original: InputStream) : FilterInputStream(original) {
 
     private var prevCycle = 0
 
@@ -27,29 +29,10 @@ class RSInputStream(original: InputStream) : FilterInputStream(original) {
     }
 
     fun onCycle() {
-
+        container.plugins.forEach { it.onCycle() }
     }
 
     fun onPacketReceived() {
-        Camera.setZoom()
-        val context = Client.packetContext()
-        if (context.validate()) {
-            val packet = context.packet()
-            if (packet.validate()) {
-                val id = packet.id()
-                val length = packet.length()
-                if (id == 12) {
-//                    println("incoming: id=$id, length=$length")
-//                    println("  packet: $packet")
-//                    val payload = try {
-//                        Fields["ByteBuffer#buffer", context.buffer()]
-//                    } catch (e: Exception) {
-//                        e.printStackTrace()
-//                        null
-//                    }
-//                    println("  payload: $payload")
-                }
-            }
-        }
+
     }
 }

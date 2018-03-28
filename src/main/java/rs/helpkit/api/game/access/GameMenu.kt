@@ -3,6 +3,8 @@ package rs.helpkit.api.game.access
 import rs.helpkit.api.game.wrapper.CustomMenuItem
 import rs.helpkit.api.raw.Fields
 import java.awt.Rectangle
+import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * @author Tyler Sedlar
@@ -28,9 +30,9 @@ object GameMenu {
 
     fun opcodes(): IntArray? = Fields.asIntArray("Client#menuOpcodes")
 
-    fun actions(): Array<String>? = Fields.asStringArray("Client#menuActions")
+    fun actions(): Array<String?>? = Fields.asStringArray("Client#menuActions")
 
-    fun targets(): Array<String>? = Fields.asStringArray("Client#menuTargets")
+    fun targets(): Array<String?>? = Fields.asStringArray("Client#menuTargets")
 
     fun arg0(): IntArray? = Fields.asIntArray("Client#menuArg0")
 
@@ -50,7 +52,7 @@ object GameMenu {
         System.arraycopy(array, idx, array, idx + 1, array.size - idx - 1)
     }
 
-    fun addMenuItems(filter: (actions: Array<String>, targets: Array<String>) -> Boolean,
+    fun addMenuItems(filter: (actions: Array<String?>, targets: Array<String?>) -> Boolean,
                      insertion: Int, vararg items: CustomMenuItem) {
         if (visible()) {
             val size = itemCount
@@ -112,4 +114,52 @@ object GameMenu {
             items.forEach { VALID_CUSTOM_MENU_ITEMS.remove(it.text) }
         }
     }
+
+    fun sort(vararg priority: String) {
+        return sort(priority.reversedArray().mapIndexed { idx, item -> item to idx + 1 }.toMap())
+    }
+
+    fun sort(weights: Map<String, Int>) {
+        val size = GameMenu.itemCount
+        val actions = GameMenu.actions()!!.clone()
+        val targets = GameMenu.targets()!!.clone()
+        val opcodes = GameMenu.opcodes()!!.clone()
+        val arg0 = GameMenu.arg0()!!.clone()
+        val arg1 = GameMenu.arg1()!!.clone()
+        val arg2 = GameMenu.arg2()!!.clone()
+
+        val items = Array(size) { i ->
+            Action(actions[i]!!, targets[i]!!, opcodes[i], arg0[i], arg1[i], arg2[i])
+        }
+
+        // Modify
+        Arrays.sort(items, { a, b -> compare(a, b, weights) })
+
+        // Write them back
+        for (i in 0 until size) {
+            val item = items[i]
+            actions[i] = item.action
+            targets[i] = item.target
+            opcodes[i] = item.opcode
+            arg0[i] = item.arg0
+            arg1[i] = item.arg1
+            arg2[i] = item.arg2
+        }
+
+        Fields.set("Client#menuActions", actions)
+        Fields.set("Client#menuTargets", targets)
+        Fields.set("Client#menuOpcodes", opcodes)
+        Fields.set("Client#menuArg0", arg0)
+        Fields.set("Client#menuArg1", arg1)
+        Fields.set("Client#menuArg2", arg2)
+    }
+
+    private fun compare(a: Action, b: Action, weights: Map<String, Int>): Int {
+        val wA = weights[a.action] ?: 0
+        val wB = weights[b.action] ?: 0
+        return Integer.compare(wA, wB)
+    }
 }
+
+
+private class Action(var action: String, var target: String, var opcode: Int, var arg0: Int, var arg1: Int, var arg2: Int)

@@ -1,8 +1,10 @@
 package rs.helpkit
 
 import rs.helpkit.api.util.Time
+import rs.helpkit.internal.ReplacementTasks
 import rs.helpkit.pref.RSPreferences
 import rs.helpkit.reflect.Classes
+import rs.helpkit.reflect.ObjectProxy
 import rs.helpkit.util.io.Internet
 import java.applet.Applet
 import java.io.File
@@ -80,6 +82,7 @@ object JagexAppletViewer {
         val loader = URLClassLoader.newInstance(arrayOf(jar.toURI().toURL()))
 
         val main = loader.loadClass("jagexappletviewer")
+
         val exec = main.getDeclaredMethod("main", Array<String>::class.java)
 
         System.setProperty("com.jagex.config", String.format(CONFIG, RSPreferences.defaultWorld))

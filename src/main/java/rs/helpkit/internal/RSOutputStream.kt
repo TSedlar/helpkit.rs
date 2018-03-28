@@ -1,5 +1,6 @@
 package rs.helpkit.internal
 
+import rs.helpkit.OSRSContainer
 import rs.helpkit.api.game.access.Client
 import rs.helpkit.api.game.wrapper.OutgoingPacket
 import rs.helpkit.api.game.wrapper.PacketNode
@@ -11,7 +12,7 @@ import java.io.OutputStream
  * @author Tyler Sedlar
  * @since 3/24/2018
  */
-class RSOutputStream(original: OutputStream) : FilterOutputStream(original) {
+class RSOutputStream(container: OSRSContainer, original: OutputStream) : FilterOutputStream(original) {
 
     override fun flush() {
         try {

@@ -25,7 +25,7 @@ open class Wrapper(private val container: String, referent: Any?) : WeakReferenc
 
     protected fun asIntArray(name: String): IntArray? = Fields.asIntArray(key(name), get())
 
-    protected fun asStringArray(name: String): Array<String>? = Fields.asStringArray(key(name), get())
+    protected fun asStringArray(name: String): Array<String?>? = Fields.asStringArray(key(name), get())
 
     fun validate(): Boolean = get() != null
 

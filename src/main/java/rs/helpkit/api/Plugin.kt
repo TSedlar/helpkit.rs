@@ -1,5 +1,6 @@
 package rs.helpkit.api
 
+import com.google.common.eventbus.EventBus
 import rs.helpkit.api.util.Schedule
 import rs.helpkit.api.util.Time
 import java.awt.event.MouseEvent
@@ -20,6 +21,10 @@ abstract class Plugin : Thread(), MouseInputListener {
     var enabled = true
 
     abstract fun validate(): Boolean
+
+    open fun onEventBus(bus: EventBus) {
+        //
+    }
 
     override fun run() {
         val self: Plugin = this

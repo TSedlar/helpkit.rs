@@ -1,5 +1,6 @@
 package rs.helpkit.plugins
 
+import com.google.common.eventbus.EventBus
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
 import rs.helpkit.api.game.access.GameMenu
@@ -43,6 +44,10 @@ class PluginTab : Plugin(), Renderable {
             XPTrackerTab(this),
             TimersTab(this)
     )
+
+    override fun onEventBus(bus: EventBus) {
+        tabs.forEach { bus.register(it) }
+    }
 
     override fun validate(): Boolean {
         return true

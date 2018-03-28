@@ -110,7 +110,10 @@ class OSRSContainer(applet: Applet) {
         }
         logger.info("Started looping plugins")
 
-        plugins.forEach { bus.register(it) }
+        plugins.forEach {
+            bus.register(it)
+            it.onEventBus(bus)
+        }
 
         logger.info("Installing fonts")
         Resources.installFonts()

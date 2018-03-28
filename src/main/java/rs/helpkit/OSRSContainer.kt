@@ -132,6 +132,8 @@ class OSRSContainer(applet: Applet) {
                         .forEach { p -> (p as Renderable).render(g) }
             }
         })
+
+        canvas.requestFocus()
     }
 
     private fun findWindow(canvas: Canvas?): Window {

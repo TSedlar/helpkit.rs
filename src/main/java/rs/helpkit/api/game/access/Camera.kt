@@ -58,7 +58,12 @@ object Camera {
         }
 
         Interfaces.findChild {
-            !it.hidden() && (it.spriteId() == Sprites.INTERFACE_EXIT || it.spriteId() == Sprites.INTERFACE_EXIT_HOVER)
+            !it.hidden() && (it.spriteId() == Sprites.INTERFACE_EXIT1 ||
+                    it.spriteId() == Sprites.INTERFACE_EXIT1_HOVER ||
+                    it.spriteId() == Sprites.INTERFACE_EXIT2 ||
+                    it.spriteId() == Sprites.INTERFACE_EXIT2_HOVER ||
+                    it.spriteId() == Sprites.INTERFACE_EXIT3 ||
+                    it.spriteId() == Sprites.INTERFACE_EXIT3_HOVER)
         }?.let {
             val parent = it.parent()
             if (parent != null) {

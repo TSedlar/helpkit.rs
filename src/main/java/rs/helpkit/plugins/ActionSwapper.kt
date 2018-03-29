@@ -21,6 +21,8 @@ class ActionSwapper : Plugin(), Renderable {
 
         val BANK_ORDER = listOf("Exchange", "Bank", "Collect")
 
+        val OBJECT_ORDER = listOf("Enter")
+
         val TAB_ORDER = listOf("Break", "Toggle Destination")
 
         val WEARABLE_ORDER = listOf("Wear", "Wield", "Remove")
@@ -56,6 +58,7 @@ class ActionSwapper : Plugin(), Renderable {
         }
         options.addAll(BONE_ORDER)
         options.addAll(BANK_ORDER)
+        options.addAll(OBJECT_ORDER)
         options.addAll(TAB_ORDER)
         options.addAll(WEARABLE_ORDER)
         options.addAll(FOOD_ORDER)

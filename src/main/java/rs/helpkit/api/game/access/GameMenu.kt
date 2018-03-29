@@ -154,10 +154,20 @@ object GameMenu {
         Fields.set("Client#menuArg2", arg2)
     }
 
+    private val TAG_REGEX = "<[^>]*>".toRegex()
+
+    private fun stripTarget(target: String): String {
+        return target.replace(TAG_REGEX,"")
+    }
+
+    private fun weightOf(action: Action, weights: Map<String, Int>): Int {
+        return weights.entries.find {
+            return@find (action.action + " " + stripTarget(action.target)).startsWith(it.key)
+        }?.value ?: 0
+    }
+
     private fun compare(a: Action, b: Action, weights: Map<String, Int>): Int {
-        val wA = weights[a.action] ?: 0
-        val wB = weights[b.action] ?: 0
-        return Integer.compare(wA, wB)
+        return Integer.compare(weightOf(a, weights), weightOf(b, weights))
     }
 }
 

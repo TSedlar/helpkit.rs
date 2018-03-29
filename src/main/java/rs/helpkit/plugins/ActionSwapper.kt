@@ -19,7 +19,7 @@ class ActionSwapper : Plugin(), Renderable {
                 "Use Pasty jogre bones", "Use Marinated j' bones", "Use Shaikahan bones"
         )
 
-        val BANK_ORDER = listOf("Exchange", "Bank", "Collect")
+        val BANK_ORDER = listOf("Exchange", "Bank Banker", "Collect")
 
         val OBJECT_ORDER = listOf("Enter")
 

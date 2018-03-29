@@ -17,7 +17,8 @@ class ActionSwapper : Plugin(), Renderable {
         GameMenu.sort(
                 "Break", "Toggle Destination", "Eat", "Drink", "Wear", "Wield", "Rub", "Lay", "Set-up",
                 "Fill", "Empty", "Check", "Deposit", "Settings", "Teleport", "Features", "Disassemble",
-                "Gem Mine", "Commune", "Use", "Bury", "Pickpocket", "Attack", "Exchange", "Talk-to"
+                "Gem Mine", "Commune", "Use", "Bury", "Pickpocket", "Attack", "Exchange", "Bank", "Collect",
+                "Talk-to"
         )
     }
 

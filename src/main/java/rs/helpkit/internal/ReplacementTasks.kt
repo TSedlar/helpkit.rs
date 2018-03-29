@@ -25,9 +25,11 @@ object ReplacementTasks {
                         canvas.original.mouseListeners.forEach { canvas.original.removeMouseListener(it) }
                         canvas.original.mouseMotionListeners.forEach { canvas.original.removeMouseMotionListener(it) }
                         canvas.original.mouseWheelListeners.forEach { canvas.original.removeMouseWheelListener(it) }
+                        canvas.original.keyListeners.forEach { canvas.original.removeKeyListener(it) }
                         canvas.original.addMouseListener(canvas.mouseInputAdapter)
                         canvas.original.addMouseMotionListener(canvas.mouseInputAdapter)
                         canvas.original.addMouseWheelListener(canvas.mouseInputAdapter)
+                        canvas.original.addKeyListener(canvas.keyInputAdapter)
                         val producer = Fields["Client#interfaceProducer"]
                         Fields.set("ComponentProducer#component", canvas, producer)
                         Fields.set("GameEngine#canvas", canvas, applet)

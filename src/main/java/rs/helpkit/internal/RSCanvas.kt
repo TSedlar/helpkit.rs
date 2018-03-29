@@ -6,9 +6,7 @@ import java.awt.Canvas
 import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Graphics2D
-import java.awt.event.MouseListener
-import java.awt.event.MouseMotionListener
-import java.awt.event.MouseWheelListener
+import java.awt.event.*
 import java.awt.image.BufferedImage
 import java.util.*
 import javax.swing.event.MouseInputAdapter
@@ -28,7 +26,9 @@ class RSCanvas(container: OSRSContainer, var original: Canvas) : Canvas() {
     private val initialMouseListeners: Array<MouseListener>
     private val initialMouseMotionListeners: Array<MouseMotionListener>
     private val initialMouseWheelListeners: Array<MouseWheelListener>
+    private val initialKeyListeners: Array<KeyListener>
     var mouseInputAdapter: MouseInputAdapter? = null
+    var keyInputAdapter: KeyAdapter? = null
 
     val consumers: MutableList<(Graphics2D) -> Unit> = ArrayList()
 
@@ -39,8 +39,10 @@ class RSCanvas(container: OSRSContainer, var original: Canvas) : Canvas() {
         initialMouseListeners = original.mouseListeners
         initialMouseMotionListeners = original.mouseMotionListeners
         initialMouseWheelListeners = original.mouseWheelListeners
+        initialKeyListeners = original.keyListeners
         mouseInputAdapter = InputRedirector.createMouseAdapter(container, initialMouseListeners,
                 initialMouseMotionListeners, initialMouseWheelListeners)
+        keyInputAdapter = InputRedirector.createKeyAdapter(container, initialKeyListeners)
     }
 
     fun normalize() {

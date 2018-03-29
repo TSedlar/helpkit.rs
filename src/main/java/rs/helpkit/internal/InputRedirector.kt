@@ -4,6 +4,7 @@ import rs.helpkit.OSRSContainer
 import rs.helpkit.api.game.access.Camera
 import rs.helpkit.api.game.access.Client
 import rs.helpkit.api.game.access.GameMenu
+import rs.helpkit.api.game.access.Keyboard
 import rs.helpkit.api.rsui.FXComponent
 import rs.helpkit.api.util.Time
 import java.awt.event.*
@@ -73,6 +74,29 @@ object InputRedirector {
                 } else {
                     initialMouseWheelListeners.forEach { mml -> mml.mouseWheelMoved(e) }
                 }
+            }
+        }
+    }
+
+    @JvmStatic
+    fun createKeyAdapter(container: OSRSContainer, initialKeyListeners: Array<KeyListener>): KeyAdapter {
+        return object : KeyAdapter() {
+            override fun keyPressed(e: KeyEvent) {
+                if (e.isShiftDown) {
+                    Keyboard.holdingShift = true
+                }
+                initialKeyListeners.forEach { it.keyPressed(e) }
+            }
+
+            override fun keyReleased(e: KeyEvent) {
+                if (!e.isShiftDown) {
+                    Keyboard.holdingShift = false
+                }
+                initialKeyListeners.forEach { it.keyReleased(e) }
+            }
+
+            override fun keyTyped(e: KeyEvent) {
+                initialKeyListeners.forEach { it.keyTyped(e) }
             }
         }
     }

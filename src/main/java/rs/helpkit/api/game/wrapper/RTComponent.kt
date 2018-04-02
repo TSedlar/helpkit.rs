@@ -3,6 +3,7 @@ package rs.helpkit.api.game.wrapper
 import rs.helpkit.api.game.access.Interfaces
 import rs.helpkit.api.raw.Methods
 import rs.helpkit.api.raw.Wrapper
+import rs.helpkit.api.util.Time
 import java.awt.Point
 import java.awt.Rectangle
 
@@ -136,6 +137,7 @@ class RTComponent(referent: Any?, var index: Int) : Wrapper("RTComponent", refer
         val y = y() + (height() / 2)
         val actions = actions()
         if (actions != null && !actions.isEmpty()) {
+            Time.sleep(250)
             val action = actions[0]
             Methods.invoke("Client#processAction", null, -1, id, 57, 1, action, "", x, y)
         }

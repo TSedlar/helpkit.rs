@@ -20,7 +20,8 @@ class ActionSwapper : Plugin(), Renderable {
         )
 
         val BANK_ORDER = listOf(
-                "Exchange", "Bank Banker", "Bank Chest", "Bank Grand Exchange booth", "Bank Bank booth", "Collect"
+                "Exchange", "Bank Banker", "Bank Chest", "Bank Grand Exchange booth", "Use Bank chest",
+                "Bank Bank booth", "Collect"
         )
 
         val OBJECT_ORDER = listOf("Enter")

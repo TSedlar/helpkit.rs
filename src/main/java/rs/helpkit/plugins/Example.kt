@@ -11,6 +11,7 @@ import rs.helpkit.api.util.Renderable
 import rs.helpkit.api.util.Schedule
 import java.awt.Color
 import java.awt.Graphics2D
+import java.util.*
 
 @Manifest(author = "Static", name = "Example Plugin", description = "Just an example", version = 1.0)
 class Example : Plugin(), Renderable {
@@ -41,6 +42,11 @@ class Example : Plugin(), Renderable {
 
     override fun render(g: Graphics2D) {
         g.color = Color.GREEN
+//        var y = 100
+//        ItemContainers.INVENTORY?.iterate { item ->
+//            g.drawString("${item.idx}: id=${item.id}, stack=${item.stack}, name=${item.name}", 100, y)
+//            y += 15
+//        }
 //        g.drawString("data: ${Varps.MISC_FAVOR}, ${Varps.MISC_COFFER}", 100, 100)
     }
 }

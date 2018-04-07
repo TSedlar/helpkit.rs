@@ -9,4 +9,6 @@ class RSHashTable(referent: Any?) : Wrapper("HashTable", referent) {
     fun tail(): RSNode = RSNode(this["tail"])
 
     fun buckets(): List<RSNode>? = asArray("buckets")?.map { node -> RSNode(node) }
+
+    fun iterator(): RSTableIterator = RSTableIterator(this)
 }

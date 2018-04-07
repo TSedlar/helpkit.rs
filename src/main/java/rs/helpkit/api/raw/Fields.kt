@@ -160,6 +160,17 @@ object Fields {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    @JvmOverloads
+    fun asShortArray(key: String, parent: Any? = null): ShortArray? {
+        return try {
+            get(key, parent) as ShortArray
+        } catch (e: Exception) {
+//            e.printStackTrace()
+            ShortArray(0)
+        }
+    }
+
     @JvmOverloads
     fun asStringArray(name: String, parent: Any? = null): Array<String?>? {
         return asArray(name, parent)?.map { item -> item.toString() }?.toTypedArray()

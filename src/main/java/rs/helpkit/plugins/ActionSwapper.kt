@@ -35,9 +35,9 @@ class ActionSwapper : Plugin(), Renderable {
         val JEWELLERY_ORDER = listOf("Wear", "Rub")
 
         val SPECIAL_ORDER = listOf(
-                "Commune", "Read Clue scroll", "Check", "Teleport", "Fill", "Empty Ectophial", "Empty Coal bag",
-                "Empty Herb sack", "Empty Small pouch", "Empty Medium pouch", "Empty Large pouch",
-                "Empty Giant pouch", "Deposit", "Settings", "Features", "Disassemble", "Gem Mine"
+                "Commune", "Read Clue scroll", "Open Master scroll", "Check", "Teleport", "Remove default", "Fill",
+                "Empty Ectophial", "Empty Coal bag", "Empty Herb sack", "Empty Small pouch", "Empty Medium pouch",
+                "Empty Large pouch", "Empty Giant pouch", "Deposit", "Settings", "Features", "Disassemble", "Gem Mine"
         )
 
         val SKILL_ORDER = listOf("Clean", "Search")

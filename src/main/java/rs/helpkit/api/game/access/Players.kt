@@ -1,6 +1,6 @@
 package rs.helpkit.api.game.access
 
-import rs.helpkit.api.game.wrapper.Player
+import rs.helpkit.api.game.wrapper.locatable.Player
 import rs.helpkit.api.raw.Fields
 
 /**

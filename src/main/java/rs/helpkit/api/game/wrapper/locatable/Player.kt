@@ -1,12 +1,12 @@
-package rs.helpkit.api.game.wrapper
+package rs.helpkit.api.game.wrapper.locatable
 
-import rs.helpkit.api.raw.Wrapper
+import rs.helpkit.api.game.wrapper.Nameable
 
 /**
  * @author Tyler Sedlar
  * @since 3/20/2018
  */
-class Player(referent: Any?) : Wrapper("Player", referent) {
+class Player(referent: Any?) : RSCharacter("Player", referent) {
 
     /**
      * Gets the combat level of this player

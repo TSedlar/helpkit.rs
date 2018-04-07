@@ -3,7 +3,9 @@ package rs.helpkit.api.game.access
 import rs.helpkit.api.game.wrapper.PacketContext
 import rs.helpkit.api.game.wrapper.PacketNode
 import rs.helpkit.api.raw.Fields
+import java.awt.Color
 import java.awt.Point
+import java.awt.image.BufferedImage
 
 /**
  * @author Tyler Sedlar
@@ -69,4 +71,21 @@ object Client {
         }
         return false
     }
+
+    fun rgbAt(x: Int, y: Int): Int {
+        Fields["Client#interfaceProducer"]?.let {
+            Fields["ComponentProducer#image", it].let {
+                val img = it as BufferedImage
+                val rgb = img.getRGB(5, 5)
+                println("${rgb shr 16 and 255}, ${rgb shr 8 and 255}, ${rgb and 255}")
+            }
+        }
+        return Color.BLACK.rgb
+    }
+
+    fun regionBaseX(): Int = Fields.asInt("Client#regionBaseX")
+
+    fun regionBaseY(): Int = Fields.asInt("Client#regionBaseY")
+
+    fun currentPlane(): Int = Fields.asInt("Client#currentPlane")
 }

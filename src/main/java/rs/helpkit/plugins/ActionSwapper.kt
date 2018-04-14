@@ -3,6 +3,7 @@ package rs.helpkit.plugins
 import rs.helpkit.api.Manifest
 import rs.helpkit.api.Plugin
 import rs.helpkit.api.game.access.GameMenu
+import rs.helpkit.api.game.access.GameTab
 import rs.helpkit.api.game.access.Keyboard
 import rs.helpkit.api.util.Renderable
 import java.awt.Graphics2D
@@ -59,6 +60,9 @@ class ActionSwapper : Plugin(), Renderable {
         val options: MutableList<String> = ArrayList()
         if (Keyboard.holdingShift) {
             options.addAll(SHIFT_ORDER)
+        }
+        if (GameTab.WORN_EQUIPMENT.viewing()) {
+            options.add("Remove")
         }
         options.addAll(BONE_ORDER)
         options.addAll(BANK_ORDER)

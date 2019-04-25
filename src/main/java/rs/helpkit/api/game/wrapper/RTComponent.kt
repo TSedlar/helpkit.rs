@@ -37,7 +37,7 @@ class RTComponent(referent: Any?, var index: Int) : Wrapper("RTComponent", refer
         if (uid == -1) {
             val tableIterator = Interfaces.subWindowIterator()
             val containerId = rawId() ushr 16
-            val node = tableIterator.findByFilter({ node -> node.subWindowId() == containerId })
+            val node = tableIterator.findByFilter { node -> node.subWindowId() == containerId }
             if (node != null && node.validate()) {
                 return node.uid().toInt()
             }
@@ -136,10 +136,28 @@ class RTComponent(referent: Any?, var index: Int) : Wrapper("RTComponent", refer
         val x = x() + (width() / 2)
         val y = y() + (height() / 2)
         val actions = actions()
-        if (actions != null && !actions.isEmpty()) {
+        if (actions != null && actions.isNotEmpty()) {
             Time.sleep(250)
             val action = actions[0]
             Methods.invoke("Client#processAction", null, -1, id, 57, 1, action, "", x, y)
+        }
+    }
+
+    fun flatTree(): List<RTComponent> {
+        val list: MutableList<RTComponent> = ArrayList()
+        children().forEach {
+            list.add(it)
+            list.addAll(it.flatTree())
+        }
+        return list
+    }
+
+    fun path(): String {
+        val parent = parent()
+        return if (parent == null) {
+            id().toString()
+        } else {
+            parent.path() + ", " + id()
         }
     }
 }
